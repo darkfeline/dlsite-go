@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"go.felesatra.moe/dlsite"
+	"go.felesatra.moe/dlsite/dsutil"
 	"go.felesatra.moe/subcommands"
 )
 
@@ -23,9 +24,9 @@ func infoCmd(args []string) {
 	if r == "" {
 		log.Fatal("Invalid RJ code")
 	}
-	c := defaultCache()
+	c := dsutil.DefaultCache()
 	defer c.Close()
-	w, err := fetch(c, r)
+	w, err := dsutil.Fetch(c, r)
 	if err != nil {
 		log.Fatalf("Error fetching work info: %s", err)
 	}
