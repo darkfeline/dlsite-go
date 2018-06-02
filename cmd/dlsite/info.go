@@ -37,12 +37,7 @@ func printInfo(r dlsite.RJCode) error {
 	if err != nil {
 		return errors.Wrap(err, "fetch work info")
 	}
-	const t = `%s
-Name %s
-Maker %s
-Series %s
-`
-	fmt.Printf(t, w.RJCode, w.Name, w.Maker, w.Series)
+	printWork(os.Stdout, w)
 	return nil
 }
 
