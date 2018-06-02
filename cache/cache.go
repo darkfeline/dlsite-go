@@ -6,15 +6,24 @@ package cache
 import (
 	"bytes"
 	"encoding/gob"
+	"path/filepath"
 
 	"github.com/coreos/bbolt"
 	"github.com/pkg/errors"
 	"go.felesatra.moe/dlsite"
+	"go.felesatra.moe/xdg"
 )
 
 // Cache is a cache for DLSite work information.
 type Cache struct {
 	db *bolt.DB
+}
+
+// OpenDefault opens the default cache using XDG directory
+// configuration.
+func OpenDefault() (*Cache, error) {
+	p := filepath.Join(xdg.CacheHome(), "go.felesatra.moe_dlsite.db")
+	return Open(p)
 }
 
 // Open opens and returns a Cache object.
