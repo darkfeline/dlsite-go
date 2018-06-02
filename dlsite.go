@@ -1,5 +1,5 @@
 /*
-Package dlsite provides a Go API for accessing DLSite information
+Package dlsite provides a Go API for accessing DLSite information.
 */
 package dlsite
 
