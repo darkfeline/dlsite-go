@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
-	"sync"
 
+	"github.com/pkg/errors"
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/dsutil"
 	"go.felesatra.moe/subcommands"
@@ -22,47 +23,41 @@ func listCmd(args []string) {
 	var i bool
 	f.BoolVar(&i, "info", false, "Fetch work info also")
 	f.Parse(args[1:])
-
-	c := make(chan dlsite.RJCode)
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go func() {
-		if i {
-			printWorks(c)
-		} else {
-			printCodes(c)
-		}
-		wg.Done()
-	}()
-	s := bufio.NewScanner(os.Stdin)
-	for s.Scan() {
-		r := dlsite.Parse(s.Text())
-		if r != "" {
-			c <- r
-		}
-	}
-	close(c)
-	wg.Wait()
-	if err := s.Err(); err != nil {
-		log.Fatalf("Error reading lines: %s", err)
+	if err := listMain(i); err != nil {
+		log.Fatal(err)
 	}
 }
 
-func printCodes(c <-chan dlsite.RJCode) {
-	for r := range c {
-		fmt.Println(r)
+func listMain(info bool) error {
+	if !info {
+		return mapCodes(os.Stdin, func(r dlsite.RJCode) error {
+			fmt.Println(r)
+			return nil
+		})
 	}
-}
-
-func printWorks(c <-chan dlsite.RJCode) {
-	dc := dsutil.DefaultCache()
-	defer dc.Close()
-	for r := range c {
-		w, err := dsutil.Fetch(dc, r)
+	c := dsutil.DefaultCache()
+	defer c.Close()
+	return mapCodes(os.Stdin, func(r dlsite.RJCode) error {
+		w, err := dsutil.Fetch(c, r)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error fetching work: %s\n", err)
+			return errors.Wrap(err, "fetch work")
 		}
 		printWork(os.Stdout, w)
 		os.Stdout.Write([]byte("\n"))
+		return nil
+	})
+}
+
+func mapCodes(r io.Reader, f func(dlsite.RJCode) error) error {
+	s := bufio.NewScanner(r)
+	for s.Scan() {
+		r := dlsite.Parse(s.Text())
+		if err := f(r); err != nil {
+			return err
+		}
 	}
+	if err := s.Err(); err != nil {
+		return err
+	}
+	return nil
 }
