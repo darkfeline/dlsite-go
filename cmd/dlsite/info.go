@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/pkg/errors"
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/dsutil"
 	"go.felesatra.moe/subcommands"
@@ -24,11 +25,17 @@ func infoCmd(args []string) {
 	if r == "" {
 		log.Fatal("Invalid RJ code")
 	}
+	if err := printInfo(r); err != nil {
+		log.Fatalf("Error: %s", err)
+	}
+}
+
+func printInfo(r dlsite.RJCode) error {
 	c := dsutil.DefaultCache()
 	defer c.Close()
 	w, err := dsutil.Fetch(c, r)
 	if err != nil {
-		log.Fatalf("Error fetching work info: %s", err)
+		return errors.Wrap(err, "fetch work info")
 	}
 	const t = `%s
 Name %s
@@ -36,6 +43,7 @@ Maker %s
 Series %s
 `
 	fmt.Printf(t, w.RJCode, w.Name, w.Maker, w.Series)
+	return nil
 }
 
 func infoUsage(w io.Writer) {
