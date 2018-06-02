@@ -19,11 +19,13 @@ func infoCmd(args []string) {
 		infoUsage(os.Stderr)
 		os.Exit(1)
 	}
-	c := dlsite.Parse(args[1])
-	if c == "" {
+	r := dlsite.Parse(args[1])
+	if r == "" {
 		log.Fatal("Invalid RJ code")
 	}
-	w, err := dlsite.Fetch(c)
+	c := defaultCache()
+	defer c.Close()
+	w, err := fetch(c, r)
 	if err != nil {
 		log.Fatalf("Error fetching work info: %s", err)
 	}
