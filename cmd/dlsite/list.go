@@ -19,7 +19,7 @@ func init() {
 }
 
 func listCmd(args []string) {
-	f := flag.NewFlagSet("list", flag.ExitOnError)
+	f := flag.NewFlagSet("dlsite list", flag.ExitOnError)
 	var i bool
 	f.BoolVar(&i, "info", false, "Fetch work info also")
 	f.Parse(args[1:])

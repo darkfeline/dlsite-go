@@ -21,7 +21,7 @@ func init() {
 }
 
 func orgCmd(args []string) {
-	f := flag.NewFlagSet("list", flag.ExitOnError)
+	f := flag.NewFlagSet("dlsite org", flag.ExitOnError)
 	var dry bool
 	var all bool
 	var desc bool
