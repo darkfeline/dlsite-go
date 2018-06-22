@@ -23,26 +23,27 @@ func mvCmd(args []string) {
 		mvUsage(os.Stderr)
 		os.Exit(1)
 	}
-	n := args[1]
+	p := args[1]
 	var r dlsite.RJCode
 	if len(args) > 3 {
 		r = dlsite.Parse(args[2])
 	} else {
-		r = dlsite.Parse(n)
+		r = dlsite.Parse(p)
 	}
-	if err := mvMain(n, r); err != nil {
+	if err := mvMain(p, r); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func mvMain(n string, r dlsite.RJCode) error {
+func mvMain(p string, r dlsite.RJCode) error {
 	c := dsutil.DefaultCache()
 	defer c.Close()
 	w, err := dsutil.Fetch(c, r)
 	if err != nil {
 		return errors.Wrap(err, "fetch work info")
 	}
-	if err := os.Rename(n, filepath.Join(filepath.Dir(n), workFilename(w))); err != nil {
+	new := filepath.Join(filepath.Dir(p), workFilename(w))
+	if err := os.Rename(p, new); err != nil {
 		return err
 	}
 	return nil
@@ -54,7 +55,7 @@ func workFilename(w *dlsite.Work) string {
 }
 
 func escapeFilename(p string) string {
-	return strings.Replace("/", "_", p, -1)
+	return strings.Replace(p, "/", "_", -1)
 }
 
 func mvUsage(w io.Writer) {
