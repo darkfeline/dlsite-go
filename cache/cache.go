@@ -66,7 +66,7 @@ func (c *Cache) Get(r dlsite.RJCode) (*dlsite.Work, error) {
 		}
 		d := b.Get(encodeRJCode(r))
 		if d == nil {
-			return errors.Errorf("get %s: missing", c)
+			return errors.Errorf("get %s: missing", r)
 		}
 		var err error
 		w, err = decodeWork(d)
