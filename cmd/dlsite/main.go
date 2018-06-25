@@ -12,15 +12,11 @@ import (
 )
 
 var progName = os.Args[0]
-var commands = make([]subcommands.Cmd, 0, 1)
+var commands = make([]subcommands.Cmd, 0, 4)
 
 func main() {
-	if len(os.Args) < 2 {
-		usage(os.Stderr)
-		os.Exit(1)
-	}
 	if err := subcommands.Run(commands, os.Args[1:]); err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		fmt.Fprint(os.Stderr, err)
 		usage(os.Stderr)
 		os.Exit(1)
 	}
