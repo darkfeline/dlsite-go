@@ -70,6 +70,7 @@ func orgMain(dir string, dry, all, desc bool) error {
 	}
 	defer c.Close()
 	for _, w := range w {
+		log.Printf("Organizing %s", w)
 		err := organizeWork(c, dir, w, dry, desc)
 		if err != nil {
 			return err
@@ -78,7 +79,7 @@ func orgMain(dir string, dry, all, desc bool) error {
 	if !dry {
 		err := removeEmptyDirs(dir)
 		if err != nil {
-			log.Print(err)
+			log.Printf("Error removing empty dirs: %s", err)
 		}
 	}
 	return nil
@@ -106,8 +107,8 @@ func findWorks(dir string) ([]wPath, error) {
 func findWorksAll(dir string) ([]wPath, error) {
 	var w []wPath
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if err == nil {
-			log.Print(err)
+		if err != nil {
+			log.Printf("Error walking %s: %s", path, err)
 			return nil
 		}
 		if !info.IsDir() {
@@ -233,8 +234,8 @@ func workPath(w *dlsite.Work) wPath {
 
 func removeEmptyDirs(dir string) error {
 	return filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if err == nil {
-			log.Print(err)
+		if err != nil {
+			log.Printf("Error walking to %s: %s", path, err)
 			return nil
 		}
 		if !info.IsDir() {
