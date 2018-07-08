@@ -142,6 +142,7 @@ func organizeWork(c *cache.Cache, topdir string, p wPath, dry, desc bool) error 
 		return nil
 	}
 	if new != p {
+		log.Printf("Moving %s", p)
 		if err := renameWork(topdir, p, new); err != nil {
 			return errors.Wrap(err, "rename work")
 		}
