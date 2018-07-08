@@ -45,7 +45,7 @@ func orgCmd(args []string) {
 		os.Exit(1)
 	}
 	if err := orgMain(dir, dry, all, desc); err != nil {
-		log.Fatal(err)
+		log.Fatalf("%+v", err)
 	}
 }
 
@@ -214,8 +214,13 @@ func pathWork(c *cache.Cache, p string) (*dlsite.Work, error) {
 		return nil, errors.Errorf("invalid work filename %s", fn)
 	}
 	w, err := c.Get(r)
+	if err == nil {
+		return w, nil
+	}
+	log.Printf("Could not get %s from cache: %s", r, err)
+	w, err = dlsite.Fetch(r)
 	if err != nil {
-		return nil, errors.Wrap(err, "get work info")
+		return nil, err
 	}
 	return w, nil
 }

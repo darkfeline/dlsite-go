@@ -44,7 +44,7 @@ func OpenDefault() (*Cache, error) {
 func Open(p string) (*Cache, error) {
 	db, err := bolt.Open(p, 0600, nil)
 	if err != nil {
-		return nil, errors.Wrap(err, "open DLSite cache")
+		return nil, errors.Wrap(err, "open dlsite cache")
 	}
 	return &Cache{db: db}, nil
 }
@@ -62,23 +62,20 @@ func (c *Cache) Get(r dlsite.RJCode) (*dlsite.Work, error) {
 	err := c.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(bucket)
 		if b == nil {
-			return errors.Errorf("bucket missing")
+			return errors.New("dlsite cache bucket missing")
 		}
 		d := b.Get(encodeRJCode(r))
 		if d == nil {
-			return errors.Errorf("get %s: missing", r)
+			return errors.Errorf("dlsite cache get work %s: missing", r)
 		}
 		var err error
 		w, err = decodeWork(d)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "dlsite cache decode work")
 		}
 		return nil
 	})
-	if err != nil {
-		return nil, err
-	}
-	return w, nil
+	return w, err
 }
 
 // Put inserts the work into the Cache.
@@ -113,7 +110,7 @@ func decodeWork(b []byte) (*dlsite.Work, error) {
 	var w dlsite.Work
 	err := dec.Decode(&w)
 	if err != nil {
-		return nil, errors.Wrap(err, "decode dlsite.Work")
+		return nil, err
 	}
 	return &w, nil
 }
