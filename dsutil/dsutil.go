@@ -41,7 +41,7 @@ func (_ nullCache) Put(w *dlsite.Work) error {
 }
 
 // Cache defines the interface for cache objects to pass to Fetch.
-// The semantics of the methods should match dlsite.Cache.
+// The semantics of the methods should match cache.Cache.
 type Cache interface {
 	Close() error
 	Get(dlsite.RJCode) (*dlsite.Work, error)
@@ -49,7 +49,7 @@ type Cache interface {
 }
 
 // DefaultCache returns a sane default Cache object.  This cache is
-// backed by a database stored at a path respecting XDG database
+// backed by a database stored at a path respecting XDG directory
 // specifications, but falls back to a null object if opening the file
 // fails.  Make sure to defer a call to Close.
 func DefaultCache() Cache {
