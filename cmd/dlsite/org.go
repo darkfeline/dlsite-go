@@ -1,56 +1,63 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/google/subcommands"
 	"github.com/pkg/errors"
+
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/cache"
-	"go.felesatra.moe/subcommands"
 )
 
-func init() {
-	commands = append(commands, subcommands.New("org", orgCmd))
+type orgCmd struct {
+	dry  bool
+	all  bool
+	desc bool
 }
 
-func orgCmd(args []string) {
-	f := flag.NewFlagSet("dlsite org", flag.ExitOnError)
-	var dry bool
-	var all bool
-	var desc bool
-	f.BoolVar(&dry, "dry-run", false, "Dry run")
-	f.BoolVar(&all, "all", false, "Organize all works recursively")
-	f.BoolVar(&desc, "descriptions", false, "Fetch work descriptions")
-	f.Parse(args[1:])
-	args = f.Args()
+func (*orgCmd) Name() string     { return "org" }
+func (*orgCmd) Synopsis() string { return "Organize works." }
+func (*orgCmd) Usage() string {
+	return `Usage: org [dir]
+Organize works.
+`
+}
+
+func (c *orgCmd) SetFlags(f *flag.FlagSet) {
+	f.BoolVar(&c.dry, "dryrun", false, "Dry run")
+	f.BoolVar(&c.all, "all", false, "Organize all works recursively")
+	f.BoolVar(&c.desc, "descriptions", false, "Fetch work descriptions")
+}
+
+func (c *orgCmd) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
 	var dir string
-	switch len(args) {
-	case 1:
-		dir = args[0]
+	switch f.NArg() {
 	case 0:
 		var err error
 		dir, err = os.Getwd()
 		if err != nil {
-			log.Fatalf("Could not get current directory: %s", err)
+			fmt.Fprintf(os.Stderr, "Could not get current directory: %s", err)
+			return subcommands.ExitFailure
 		}
+	case 1:
+		dir = f.Arg(0)
 	default:
-		orgUsage(os.Stderr)
-		os.Exit(1)
+		fmt.Fprint(os.Stderr, c.Usage())
+		return subcommands.ExitUsageError
 	}
-	if err := orgMain(dir, dry, all, desc); err != nil {
-		log.Fatalf("%+v", err)
+	if err := orgMain(dir, c.dry, c.all, c.desc); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		return subcommands.ExitFailure
 	}
-}
-
-func orgUsage(w io.Writer) {
-	fmt.Fprintf(w, "Usage: %s org [DIR]\n", progName)
+	return subcommands.ExitSuccess
 }
 
 func orgMain(dir string, dry, all, desc bool) error {

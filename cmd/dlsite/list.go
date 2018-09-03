@@ -2,50 +2,63 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"flag"
 	"fmt"
 	"io"
-	"log"
 	"os"
 
+	"github.com/google/subcommands"
 	"github.com/pkg/errors"
+
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/dsutil"
-	"go.felesatra.moe/subcommands"
 )
 
-func init() {
-	commands = append(commands, subcommands.New("list", listCmd))
+type listCmd struct {
+	fetchInfo bool
 }
 
-func listCmd(args []string) {
-	f := flag.NewFlagSet("dlsite list", flag.ExitOnError)
-	var i bool
-	f.BoolVar(&i, "info", false, "Fetch work info also")
-	f.Parse(args[1:])
-	if err := listMain(i); err != nil {
-		log.Fatal(err)
+func (*listCmd) Name() string     { return "list" }
+func (*listCmd) Synopsis() string { return "Parse RJ codes from stdin." }
+func (*listCmd) Usage() string {
+	return `Usage: list
+Parse RJ codes from stdin.
+`
+}
+
+func (c *listCmd) SetFlags(f *flag.FlagSet) {
+	f.BoolVar(&c.fetchInfo, "fetch", false, "Also fetch info")
+}
+
+func (c *listCmd) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+	if err := listMain(c); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %s", err)
+		return subcommands.ExitFailure
 	}
+	return subcommands.ExitSuccess
 }
 
-func listMain(info bool) error {
-	if !info {
+func listMain(c *listCmd) error {
+	if c.fetchInfo {
+		c := dsutil.DefaultCache()
+		defer c.Close()
+		return mapCodes(os.Stdin, func(r dlsite.RJCode) error {
+			w, err := dsutil.Fetch(c, r)
+			if err != nil {
+				return errors.Wrap(err, "fetch work")
+			}
+			printWork(os.Stdout, w)
+			os.Stdout.Write([]byte("\n"))
+			return nil
+		})
+
+	} else {
 		return mapCodes(os.Stdin, func(r dlsite.RJCode) error {
 			fmt.Println(r)
 			return nil
 		})
 	}
-	c := dsutil.DefaultCache()
-	defer c.Close()
-	return mapCodes(os.Stdin, func(r dlsite.RJCode) error {
-		w, err := dsutil.Fetch(c, r)
-		if err != nil {
-			return errors.Wrap(err, "fetch work")
-		}
-		printWork(os.Stdout, w)
-		os.Stdout.Write([]byte("\n"))
-		return nil
-	})
 }
 
 func mapCodes(r io.Reader, f func(dlsite.RJCode) error) error {

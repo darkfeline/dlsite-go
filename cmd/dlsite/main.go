@@ -1,30 +1,23 @@
-/*
-Command dlsite provides dlsite utilities.
-*/
+// Command dlsite provides dlsite utilities.
 package main
 
 import (
-	"fmt"
-	"io"
+	"context"
+	"flag"
 	"os"
 
-	"go.felesatra.moe/subcommands"
+	"github.com/google/subcommands"
 )
 
-var progName = os.Args[0]
-var commands = make([]subcommands.Cmd, 0, 4)
-
 func main() {
-	if err := subcommands.Run(commands, os.Args[1:]); err != nil {
-		fmt.Fprint(os.Stderr, err)
-		usage(os.Stderr)
-		os.Exit(1)
-	}
-}
-
-func usage(w io.Writer) {
-	fmt.Fprintln(w, "Valid commands:")
-	for _, c := range commands {
-		fmt.Fprintln(w, c.Name())
-	}
+	subcommands.Register(subcommands.HelpCommand(), "")
+	subcommands.Register(subcommands.FlagsCommand(), "")
+	subcommands.Register(subcommands.CommandsCommand(), "")
+	subcommands.Register(&infoCmd{}, "")
+	subcommands.Register(&listCmd{}, "")
+	subcommands.Register(&mvCmd{}, "")
+	subcommands.Register(&orgCmd{}, "")
+	flag.Parse()
+	ctx := context.Background()
+	os.Exit(int(subcommands.Execute(ctx)))
 }

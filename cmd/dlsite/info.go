@@ -1,33 +1,48 @@
 package main
 
 import (
+	"context"
+	"flag"
 	"fmt"
-	"io"
-	"log"
 	"os"
 
+	"github.com/google/subcommands"
 	"github.com/pkg/errors"
+
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/dsutil"
-	"go.felesatra.moe/subcommands"
 )
 
-func init() {
-	commands = append(commands, subcommands.New("info", infoCmd))
+type infoCmd struct {
 }
 
-func infoCmd(args []string) {
-	if len(args) != 2 {
-		infoUsage(os.Stderr)
-		os.Exit(1)
+func (*infoCmd) Name() string     { return "info" }
+func (*infoCmd) Synopsis() string { return "Show info for work." }
+func (*infoCmd) Usage() string {
+	return `Usage: info rjcode
+Show info for work.
+`
+}
+
+func (*infoCmd) SetFlags(f *flag.FlagSet) {
+
+}
+
+func (c *infoCmd) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+	if f.NArg() != 1 {
+		fmt.Fprint(os.Stderr, c.Usage())
+		return subcommands.ExitUsageError
 	}
-	r := dlsite.Parse(args[1])
+	r := dlsite.Parse(f.Arg(0))
 	if r == "" {
-		log.Fatal("Invalid RJ code")
+		fmt.Fprintf(os.Stderr, "Invalid RJ code\n")
+		return subcommands.ExitUsageError
 	}
 	if err := printInfo(r); err != nil {
-		log.Fatalf("Error: %s", err)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		return subcommands.ExitFailure
 	}
+	return subcommands.ExitSuccess
 }
 
 func printInfo(r dlsite.RJCode) error {
@@ -39,8 +54,4 @@ func printInfo(r dlsite.RJCode) error {
 	}
 	printWork(os.Stdout, w)
 	return nil
-}
-
-func infoUsage(w io.Writer) {
-	fmt.Fprintf(w, "Usage: %s info RJCODE\n", progName)
 }

@@ -1,38 +1,52 @@
 package main
 
 import (
+	"context"
+	"flag"
 	"fmt"
-	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/google/subcommands"
 	"github.com/pkg/errors"
+
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/dsutil"
-	"go.felesatra.moe/subcommands"
 )
 
-func init() {
-	commands = append(commands, subcommands.New("mv", mvCmd))
+type mvCmd struct {
 }
 
-func mvCmd(args []string) {
-	if len(args) < 2 {
-		mvUsage(os.Stderr)
-		os.Exit(1)
+func (*mvCmd) Name() string     { return "mv" }
+func (*mvCmd) Synopsis() string { return "Rename work dirs using DLSite info." }
+func (*mvCmd) Usage() string {
+	return `Usage: mv dir [rjcode]
+Rename work dirs using DLSite info.
+`
+}
+
+func (*mvCmd) SetFlags(f *flag.FlagSet) {
+
+}
+
+func (c *mvCmd) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+	if f.NArg() < 1 {
+		fmt.Fprint(os.Stderr, c.Usage())
+		return subcommands.ExitUsageError
 	}
-	p := args[1]
+	p := f.Arg(0)
 	var r dlsite.RJCode
-	if len(args) > 3 {
-		r = dlsite.Parse(args[2])
+	if f.NArg() > 1 {
+		r = dlsite.Parse(f.Arg(1))
 	} else {
 		r = dlsite.Parse(p)
 	}
 	if err := mvMain(p, r); err != nil {
-		log.Fatal(err)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		return subcommands.ExitFailure
 	}
+	return subcommands.ExitSuccess
 }
 
 func mvMain(p string, r dlsite.RJCode) error {
@@ -56,8 +70,4 @@ func workFilename(w *dlsite.Work) string {
 
 func escapeFilename(p string) string {
 	return strings.Replace(p, "/", "_", -1)
-}
-
-func mvUsage(w io.Writer) {
-	fmt.Fprintf(w, "Usage: %s mv FILE [RJCODE]\n", progName)
 }
