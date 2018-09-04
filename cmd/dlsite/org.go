@@ -205,12 +205,12 @@ const (
 func addDLSiteFiles(w *dlsite.Work, p string) error {
 	if w.Description != "" {
 		fp := filepath.Join(p, descFile)
-		_, err := os.Stat(fp)
-		if err == nil {
-			return nil
-		}
-		if !os.IsNotExist(err) {
+		ok, err := fileExists(fp)
+		if err != nil {
 			return err
+		}
+		if ok {
+			return nil
 		}
 		if err := ioutil.WriteFile(fp, []byte(w.Description), 0666); err != nil {
 			return err
@@ -218,12 +218,12 @@ func addDLSiteFiles(w *dlsite.Work, p string) error {
 	}
 	if len(w.TrackList) != 0 {
 		fp := filepath.Join(p, trackFile)
-		_, err := os.Stat(fp)
-		if err == nil {
-			return nil
-		}
-		if !os.IsNotExist(err) {
+		ok, err := fileExists(fp)
+		if err != nil {
 			return err
+		}
+		if ok {
+			return nil
 		}
 		var b strings.Builder
 		for i, t := range w.TrackList {
@@ -234,6 +234,18 @@ func addDLSiteFiles(w *dlsite.Work, p string) error {
 		}
 	}
 	return nil
+}
+
+func fileExists(p string) (ok bool, err error) {
+	_, err = os.Stat(p)
+	switch {
+	case err == nil:
+		return true, nil
+	case os.IsNotExist(err):
+		return false, nil
+	default:
+		return false, err
+	}
 }
 
 // getDirWork returns the dlsite.Work for the given directory.  Only
