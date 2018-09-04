@@ -75,7 +75,7 @@ func (c *orgCmd) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{})
 }
 
 func orgMain(dir string, dry, all, desc bool) error {
-	var w []wPath
+	var w []relPath
 	var err error
 	if all {
 		w, err = findWorksAll(dir)
@@ -100,18 +100,18 @@ func orgMain(dir string, dry, all, desc bool) error {
 	return nil
 }
 
-// wPath is the path of a work relative to the organize root directory.
-type wPath string
+// relPath is the path of a work relative to the organize root directory.
+type relPath string
 
-func findWorks(dir string) ([]wPath, error) {
+func findWorks(dir string) ([]relPath, error) {
 	fi, err := ioutil.ReadDir(dir)
 	if err != nil {
 		return nil, err
 	}
-	var w []wPath
+	var w []relPath
 	for _, fi := range fi {
 		if dlsite.Parse(fi.Name()) != "" {
-			w = append(w, wPath(fi.Name()))
+			w = append(w, relPath(fi.Name()))
 		}
 	}
 	return w, nil
@@ -120,8 +120,8 @@ func findWorks(dir string) ([]wPath, error) {
 // findWorksAll returns a slice of string paths of works.  The
 // directory is searched recursively for works, which are returned by
 // path relative to the given directory.
-func findWorksAll(dir string) ([]wPath, error) {
-	var w []wPath
+func findWorksAll(dir string) ([]relPath, error) {
+	var w []relPath
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			log.Printf("Error walking %s: %s", path, err)
@@ -135,7 +135,7 @@ func findWorksAll(dir string) ([]wPath, error) {
 			if err != nil {
 				return err
 			}
-			w = append(w, wPath(p))
+			w = append(w, relPath(p))
 			return filepath.SkipDir
 		}
 		return nil
@@ -146,7 +146,7 @@ func findWorksAll(dir string) ([]wPath, error) {
 	return w, nil
 }
 
-func organizeWork(c *cache.Cache, topdir string, p wPath, dry, desc bool) error {
+func organizeWork(c *cache.Cache, topdir string, p relPath, dry, desc bool) error {
 	w, err := getDirWork(c, string(p))
 	if err != nil {
 		return errors.Wrap(err, "get work info")
@@ -175,13 +175,13 @@ func organizeWork(c *cache.Cache, topdir string, p wPath, dry, desc bool) error 
 }
 
 // workPath returns the desired path for a work.
-func workPath(w *dlsite.Work) wPath {
+func workPath(w *dlsite.Work) relPath {
 	// Empty parts are ignored by Join.
-	return wPath(filepath.Join(escapeFilename(w.Maker), escapeFilename(w.Series),
+	return relPath(filepath.Join(escapeFilename(w.Maker), escapeFilename(w.Series),
 		escapeFilename(fmt.Sprintf("%s %s", w.RJCode, w.Name))))
 }
 
-func renameWork(top string, old, new wPath) error {
+func renameWork(top string, old, new relPath) error {
 	oldp := filepath.Join(top, string(old))
 	newp := filepath.Join(top, string(new))
 	if err := os.MkdirAll(filepath.Dir(newp), 0777); err != nil {
