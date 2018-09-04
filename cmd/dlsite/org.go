@@ -103,6 +103,7 @@ func orgMain(dir string, dry, all, desc bool) error {
 // relPath is the path of a work relative to the organize root directory.
 type relPath string
 
+// findWorks returns the relative paths for works found in the directory.
 func findWorks(dir string) ([]relPath, error) {
 	fi, err := ioutil.ReadDir(dir)
 	if err != nil {
