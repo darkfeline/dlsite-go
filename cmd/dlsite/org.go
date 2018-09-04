@@ -103,6 +103,10 @@ func orgMain(dir string, dry, all, desc bool) error {
 // relPath is the path of a work relative to the organize root directory.
 type relPath string
 
+func (p relPath) relativeTo(root string) string {
+	return filepath.Join(root, string(p))
+}
+
 // findWorks returns the relative paths for works found in the directory.
 func findWorks(dir string) ([]relPath, error) {
 	fi, err := ioutil.ReadDir(dir)
@@ -160,7 +164,7 @@ func organizeWork(c *cache.Cache, topdir string, p relPath, dry, desc bool) erro
 	}
 	if desc {
 		log.Printf("Adding description files for %s", p)
-		if err := addDLSiteFiles(w, filepath.Join(topdir, string(p))); err != nil {
+		if err := addDLSiteFiles(w, p.relativeTo(topdir)); err != nil {
 			return errors.Wrap(err, "add desc files")
 		}
 	}
@@ -182,8 +186,8 @@ func workPath(w *dlsite.Work) relPath {
 }
 
 func renameWork(top string, old, new relPath) error {
-	oldp := filepath.Join(top, string(old))
-	newp := filepath.Join(top, string(new))
+	oldp := old.relativeTo(top)
+	newp := new.relativeTo(top)
 	if err := os.MkdirAll(filepath.Dir(newp), 0777); err != nil {
 		return err
 	}
