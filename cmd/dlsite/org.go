@@ -143,6 +143,9 @@ func findAllWorks(dir string) ([]relPath, error) {
 	return w, nil
 }
 
+// organizeWork organizes the work with the given path relative to the
+// top directory.  This involves moving it to the correct path and
+// possibly adding some files.
 func organizeWork(c *cache.Cache, topdir string, p relPath, dry, desc bool) error {
 	w, err := getDirWork(c, string(p))
 	if err != nil {
