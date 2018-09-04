@@ -236,7 +236,8 @@ func addDLSiteFiles(w *dlsite.Work, p string) error {
 	return nil
 }
 
-// getDirWork returns the dlsite.Work for the given directory.
+// getDirWork returns the dlsite.Work for the given directory.  Only
+// the directory filename is used.
 func getDirWork(c *cache.Cache, p string) (*dlsite.Work, error) {
 	fn := filepath.Base(p)
 	r := dlsite.Parse(fn)
