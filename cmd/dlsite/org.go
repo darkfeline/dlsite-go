@@ -240,6 +240,8 @@ func pathWork(c *cache.Cache, p string) (*dlsite.Work, error) {
 	return w, nil
 }
 
+// wPath is the relative path that a work should be organized with.
+// Use workPath to get wPaths.
 type wPath string
 
 // workPath returns the wPath for a work.
