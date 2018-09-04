@@ -132,7 +132,8 @@ func findAllWorks(dir string) ([]relPath, error) {
 		if dlsite.Parse(info.Name()) != "" {
 			p, err := filepath.Rel(dir, path)
 			if err != nil {
-				return err
+				// Not possible for dir and path in Walk.
+				panic(err)
 			}
 			w = append(w, relPath(p))
 			return filepath.SkipDir
