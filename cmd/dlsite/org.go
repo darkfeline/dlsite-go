@@ -86,8 +86,6 @@ func orgMain(dir string, dry, all, desc bool) error {
 	return nil
 }
 
-type wPath string
-
 func findWorks(dir string) ([]wPath, error) {
 	fi, err := ioutil.ReadDir(dir)
 	if err != nil {
@@ -228,7 +226,11 @@ func pathWork(c *cache.Cache, p string) (*dlsite.Work, error) {
 	return w, nil
 }
 
+type wPath string
+
+// workPath returns the wPath for a work.
 func workPath(w *dlsite.Work) wPath {
+	// Empty parts are ignored by Join.
 	return wPath(filepath.Join(escapeFilename(w.Maker), escapeFilename(w.Series),
 		escapeFilename(fmt.Sprintf("%s %s", w.RJCode, w.Name))))
 }
