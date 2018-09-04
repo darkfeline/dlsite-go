@@ -35,29 +35,37 @@ func (c *mvCmd) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) 
 		fmt.Fprint(os.Stderr, c.Usage())
 		return subcommands.ExitUsageError
 	}
-	p := f.Arg(0)
-	var r dlsite.RJCode
+	path := f.Arg(0)
+	var s string
 	if f.NArg() > 1 {
-		r = dlsite.Parse(f.Arg(1))
+		s = f.Arg(1)
 	} else {
-		r = dlsite.Parse(p)
+		s = path
 	}
-	if err := mvMain(p, r); err != nil {
+	r := dlsite.Parse(s)
+	if r == "" {
+		fmt.Fprintf(os.Stderr, "invalid RJ code %s\n", s)
+		return subcommands.ExitUsageError
+	}
+	if err := mvMain(path, r); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 		return subcommands.ExitFailure
 	}
 	return subcommands.ExitSuccess
 }
 
-func mvMain(p string, r dlsite.RJCode) error {
+func mvMain(path string, r dlsite.RJCode) error {
 	c := dsutil.DefaultCache()
 	defer c.Close()
 	w, err := dsutil.Fetch(c, r)
 	if err != nil {
 		return errors.Wrap(err, "fetch work info")
 	}
-	new := filepath.Join(filepath.Dir(p), workFilename(w))
-	if err := os.Rename(p, new); err != nil {
+	new := filepath.Join(filepath.Dir(path), workFilename(w))
+	if new == path {
+		return nil
+	}
+	if err := os.Rename(path, new); err != nil {
 		return err
 	}
 	return nil
