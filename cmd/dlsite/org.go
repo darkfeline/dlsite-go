@@ -83,12 +83,6 @@ func orgMain(dir string, dry, all, desc bool) error {
 			return err
 		}
 	}
-	if !dry {
-		err := removeEmptyDirs(dir)
-		if err != nil {
-			log.Printf("Error removing empty dirs: %s", err)
-		}
-	}
 	return nil
 }
 
@@ -237,27 +231,4 @@ func pathWork(c *cache.Cache, p string) (*dlsite.Work, error) {
 func workPath(w *dlsite.Work) wPath {
 	return wPath(filepath.Join(escapeFilename(w.Maker), escapeFilename(w.Series),
 		escapeFilename(fmt.Sprintf("%s %s", w.RJCode, w.Name))))
-}
-
-func removeEmptyDirs(dir string) error {
-	return filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			log.Printf("Error walking to %s: %s", path, err)
-			return nil
-		}
-		if !info.IsDir() {
-			return nil
-		}
-		f, err := ioutil.ReadDir(path)
-		if err != nil {
-			log.Print(err)
-			return nil
-		}
-		if len(f) == 0 {
-			if err := os.Remove(path); err != nil {
-				log.Print(err)
-			}
-		}
-		return nil
-	})
 }
