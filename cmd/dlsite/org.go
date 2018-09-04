@@ -144,7 +144,7 @@ func findWorksAll(dir string) ([]wPath, error) {
 }
 
 func organizeWork(c *cache.Cache, topdir string, p wPath, dry, desc bool) error {
-	w, err := pathWork(c, string(p))
+	w, err := getDirWork(c, string(p))
 	if err != nil {
 		return errors.Wrap(err, "get work info")
 	}
@@ -222,7 +222,8 @@ func addDLSiteFiles(w *dlsite.Work, p string) error {
 	return nil
 }
 
-func pathWork(c *cache.Cache, p string) (*dlsite.Work, error) {
+// getDirWork returns the dlsite.Work for the given directory.
+func getDirWork(c *cache.Cache, p string) (*dlsite.Work, error) {
 	fn := filepath.Base(p)
 	r := dlsite.Parse(fn)
 	if r == "" {
