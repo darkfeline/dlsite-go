@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/google/subcommands"
@@ -54,4 +55,13 @@ func printInfo(r dlsite.RJCode) error {
 	}
 	printWork(os.Stdout, w)
 	return nil
+}
+
+func printWork(f io.Writer, w *dlsite.Work) (int, error) {
+	const t = `%s
+Name %s
+Maker %s
+Series %s
+`
+	return fmt.Fprintf(f, t, w.RJCode, w.Name, w.Maker, w.Series)
 }
