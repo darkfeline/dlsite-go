@@ -100,6 +100,9 @@ func orgMain(dir string, dry, all, desc bool) error {
 	return nil
 }
 
+// wPath is the path of a work relative to the organize root directory.
+type wPath string
+
 func findWorks(dir string) ([]wPath, error) {
 	fi, err := ioutil.ReadDir(dir)
 	if err != nil {
@@ -171,6 +174,13 @@ func organizeWork(c *cache.Cache, topdir string, p wPath, dry, desc bool) error 
 	return nil
 }
 
+// workPath returns the desired path for a work.
+func workPath(w *dlsite.Work) wPath {
+	// Empty parts are ignored by Join.
+	return wPath(filepath.Join(escapeFilename(w.Maker), escapeFilename(w.Series),
+		escapeFilename(fmt.Sprintf("%s %s", w.RJCode, w.Name))))
+}
+
 func renameWork(top string, old, new wPath) error {
 	oldp := filepath.Join(top, string(old))
 	newp := filepath.Join(top, string(new))
@@ -239,15 +249,4 @@ func getDirWork(c *cache.Cache, p string) (*dlsite.Work, error) {
 		return nil, err
 	}
 	return w, nil
-}
-
-// wPath is the relative path that a work should be organized with.
-// Use workPath to get wPaths.
-type wPath string
-
-// workPath returns the wPath for a work.
-func workPath(w *dlsite.Work) wPath {
-	// Empty parts are ignored by Join.
-	return wPath(filepath.Join(escapeFilename(w.Maker), escapeFilename(w.Series),
-		escapeFilename(fmt.Sprintf("%s %s", w.RJCode, w.Name))))
 }
