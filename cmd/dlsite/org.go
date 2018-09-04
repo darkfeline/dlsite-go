@@ -78,7 +78,7 @@ func orgMain(dir string, dry, all, desc bool) error {
 	var w []relPath
 	var err error
 	if all {
-		w, err = findWorksAll(dir)
+		w, err = findAllWorks(dir)
 	} else {
 		w, err = findWorks(dir)
 	}
@@ -118,10 +118,8 @@ func findWorks(dir string) ([]relPath, error) {
 	return w, nil
 }
 
-// findWorksAll returns a slice of string paths of works.  The
-// directory is searched recursively for works, which are returned by
-// path relative to the given directory.
-func findWorksAll(dir string) ([]relPath, error) {
+// findAllWorks returns the relative paths for works found in the directory recursively.
+func findAllWorks(dir string) ([]relPath, error) {
 	var w []relPath
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
