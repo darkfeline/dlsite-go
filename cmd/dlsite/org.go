@@ -164,11 +164,12 @@ func organizeWork(c *cache.Cache, topdir string, p relPath, dry, desc bool) erro
 			return errors.Wrap(err, "add desc files")
 		}
 	}
-	if new != p {
-		log.Printf("Moving %s", p)
-		if err := renameWork(topdir, p, new); err != nil {
-			return errors.Wrap(err, "rename work")
-		}
+	if new == p {
+		return nil
+	}
+	log.Printf("Moving %s", p)
+	if err := renameWork(topdir, p, new); err != nil {
+		return errors.Wrap(err, "rename work")
 	}
 	return nil
 }
