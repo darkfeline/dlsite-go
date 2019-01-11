@@ -104,9 +104,11 @@ func requestAnnouncePage(c RJCode) (*http.Response, error) {
 		return nil, errors.Wrapf(err, "getting %s", c.announceURL())
 	}
 	if r.StatusCode == 404 {
+		r.Body.Close()
 		return nil, fmt.Errorf("Cannot find %s", c)
 	}
 	if r.StatusCode != 200 {
+		r.Body.Close()
 		return nil, fmt.Errorf("GET %s: HTTP %d %s", c.announceURL(), r.StatusCode, r.Status)
 	}
 	return r, nil
