@@ -22,7 +22,7 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/pkg/errors"
+	"go.felesatra.moe/go2/errors"
 )
 
 // RJCode is the type for RJ code strings.  Use Parse to get RJCode
@@ -93,7 +93,7 @@ func requestPage(c RJCode) (*http.Response, error) {
 	}
 	if r.StatusCode != 200 {
 		r.Body.Close()
-		return nil, errors.Errorf("GET %s: HTTP %d %s", c.workURL(), r.StatusCode, r.Status)
+		return nil, fmt.Errorf("GET %s: HTTP %d %s", c.workURL(), r.StatusCode, r.Status)
 	}
 	return r, nil
 }
@@ -104,10 +104,10 @@ func requestAnnouncePage(c RJCode) (*http.Response, error) {
 		return nil, errors.Wrapf(err, "getting %s", c.announceURL())
 	}
 	if r.StatusCode == 404 {
-		return nil, errors.Errorf("Cannot find %s", c)
+		return nil, fmt.Errorf("Cannot find %s", c)
 	}
 	if r.StatusCode != 200 {
-		return nil, errors.Errorf("GET %s: HTTP %d %s", c.announceURL(), r.StatusCode, r.Status)
+		return nil, fmt.Errorf("GET %s: HTTP %d %s", c.announceURL(), r.StatusCode, r.Status)
 	}
 	return r, nil
 }

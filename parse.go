@@ -19,7 +19,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/pkg/errors"
+	"go.felesatra.moe/go2/errors"
 )
 
 func parseWork(c RJCode, r io.Reader) (*Work, error) {

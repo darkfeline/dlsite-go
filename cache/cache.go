@@ -20,12 +20,14 @@ package cache
 import (
 	"bytes"
 	"encoding/gob"
+	"fmt"
 	"path/filepath"
 
-	"github.com/coreos/bbolt"
-	"github.com/pkg/errors"
-	"go.felesatra.moe/dlsite"
+	bolt "github.com/coreos/bbolt"
+	"go.felesatra.moe/go2/errors"
 	"go.felesatra.moe/xdg"
+
+	"go.felesatra.moe/dlsite"
 )
 
 // Cache is a cache for DLSite work information.
@@ -66,7 +68,7 @@ func (c *Cache) Get(r dlsite.RJCode) (*dlsite.Work, error) {
 		}
 		d := b.Get(encodeRJCode(r))
 		if d == nil {
-			return errors.Errorf("dlsite cache get work %s: missing", r)
+			return fmt.Errorf("dlsite cache get work %s: missing", r)
 		}
 		var err error
 		w, err = decodeWork(d)

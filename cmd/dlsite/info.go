@@ -22,7 +22,7 @@ import (
 	"os"
 
 	"github.com/google/subcommands"
-	"github.com/pkg/errors"
+	"go.felesatra.moe/go2/errors"
 
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/dsutil"

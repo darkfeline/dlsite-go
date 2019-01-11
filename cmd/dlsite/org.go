@@ -25,7 +25,7 @@ import (
 	"strings"
 
 	"github.com/google/subcommands"
-	"github.com/pkg/errors"
+	"go.felesatra.moe/go2/errors"
 
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/cache"
@@ -254,7 +254,7 @@ func getDirWork(c *cache.Cache, p string) (*dlsite.Work, error) {
 	fn := filepath.Base(p)
 	r := dlsite.Parse(fn)
 	if r == "" {
-		return nil, errors.Errorf("invalid work filename %s", fn)
+		return nil, fmt.Errorf("invalid work filename %s", fn)
 	}
 	w, err := c.Get(r)
 	if err == nil {
