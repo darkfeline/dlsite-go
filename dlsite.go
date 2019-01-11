@@ -69,10 +69,10 @@ func Parse(s string) RJCode {
 // present for all works, like Series or TrackList.
 func Fetch(c RJCode) (*Work, error) {
 	r, err := requestPage(c)
-	defer r.Body.Close()
 	if err != nil {
 		return nil, errors.Wrapf(err, "requesting %s", c)
 	}
+	defer r.Body.Close()
 	w, err := parseWork(c, r.Body)
 	if err != nil {
 		return nil, errors.Wrap(err, "parse work")
@@ -88,9 +88,11 @@ func requestPage(c RJCode) (*http.Response, error) {
 		return nil, errors.Wrapf(err, "getting %s", c.workURL())
 	}
 	if r.StatusCode == 404 {
+		r.Body.Close()
 		return requestAnnouncePage(c)
 	}
 	if r.StatusCode != 200 {
+		r.Body.Close()
 		return nil, errors.Errorf("GET %s: HTTP %d %s", c.workURL(), r.StatusCode, r.Status)
 	}
 	return r, nil
