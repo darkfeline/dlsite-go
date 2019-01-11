@@ -26,6 +26,7 @@ import (
 
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/cache"
+	"go.felesatra.moe/dlsite/hvdb"
 )
 
 type nullCache struct{}
@@ -71,10 +72,23 @@ func Fetch(c Cache, r dlsite.RJCode) (*dlsite.Work, error) {
 	}
 	w, err = dlsite.Fetch(r)
 	if err != nil {
-		return nil, errors.Wrap(err, "fetch from DLSite")
+		log.Printf("Error fetching from DLSite: %s", err)
+		hw, err := hvdb.Fetch(r)
+		if err != nil {
+			return nil, errors.Wrap(err, "fetch from HVDB")
+		}
+		w = convertWork(hw)
 	}
 	if err := c.Put(w); err != nil {
 		log.Printf("Failed to cache work: %s", err)
 	}
 	return w, nil
+}
+
+func convertWork(w *hvdb.Work) *dlsite.Work {
+	return &dlsite.Work{
+		RJCode: w.RJCode,
+		Name:   w.Title,
+		Maker:  w.Circle,
+	}
 }
