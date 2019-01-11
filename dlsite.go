@@ -29,11 +29,11 @@ import (
 // values from strings.
 type RJCode string
 
-func (c RJCode) workURL() string {
+func workURL(c RJCode) string {
 	return fmt.Sprintf("http://www.dlsite.com/maniax/work/=/product_id/%s.html", c)
 }
 
-func (c RJCode) announceURL() string {
+func announceURL(c RJCode) string {
 	return fmt.Sprintf("http://www.dlsite.com/maniax/announce/=/product_id/%s.html", c)
 }
 
@@ -83,9 +83,9 @@ func Fetch(c RJCode) (*Work, error) {
 // requestPage requests the page for a DLSite work.  If error is nil,
 // make sure to defer a call to r.Body.Close().
 func requestPage(c RJCode) (*http.Response, error) {
-	r, err := http.Get(c.workURL())
+	r, err := http.Get(workURL(c))
 	if err != nil {
-		return nil, errors.Wrapf(err, "getting %s", c.workURL())
+		return nil, errors.Wrapf(err, "getting %s", workURL(c))
 	}
 	if r.StatusCode == 404 {
 		r.Body.Close()
@@ -93,15 +93,15 @@ func requestPage(c RJCode) (*http.Response, error) {
 	}
 	if r.StatusCode != 200 {
 		r.Body.Close()
-		return nil, fmt.Errorf("GET %s: HTTP %d %s", c.workURL(), r.StatusCode, r.Status)
+		return nil, fmt.Errorf("GET %s: HTTP %d %s", workURL(c), r.StatusCode, r.Status)
 	}
 	return r, nil
 }
 
 func requestAnnouncePage(c RJCode) (*http.Response, error) {
-	r, err := http.Get(c.announceURL())
+	r, err := http.Get(announceURL(c))
 	if err != nil {
-		return nil, errors.Wrapf(err, "getting %s", c.announceURL())
+		return nil, errors.Wrapf(err, "getting %s", announceURL(c))
 	}
 	if r.StatusCode == 404 {
 		r.Body.Close()
@@ -109,7 +109,7 @@ func requestAnnouncePage(c RJCode) (*http.Response, error) {
 	}
 	if r.StatusCode != 200 {
 		r.Body.Close()
-		return nil, fmt.Errorf("GET %s: HTTP %d %s", c.announceURL(), r.StatusCode, r.Status)
+		return nil, fmt.Errorf("GET %s: HTTP %d %s", announceURL(c), r.StatusCode, r.Status)
 	}
 	return r, nil
 }
