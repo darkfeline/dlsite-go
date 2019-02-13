@@ -8,8 +8,6 @@ github.com/coreos/bbolt v1.3.0 h1:HIgH5xUWXT914HCI671AxuTTqjj64UOFr7pHn48LUTI=
 github.com/coreos/bbolt v1.3.0/go.mod h1:iRUV2dpdMOn7Bo10OQBFzIJO9kkE559Wcmn+qkEiiKk=
 github.com/google/subcommands v0.0.0-20180618214453-5bae204cdfb2 h1:xT8XvBDdhTRgh/lZ94y4WLPjbIMh4Gsxcho5SyBMIaM=
 github.com/google/subcommands v0.0.0-20180618214453-5bae204cdfb2/go.mod h1:ZjhPrFU+Olkh9WazFPsl27BQ4UPiG37m3yTrtFlrHVk=
-go.felesatra.moe/go2/errors v1.0.0 h1:C5LUOCuDrqbZuKagk01nVrep1a50MrGTwuWOycXa4Mk=
-go.felesatra.moe/go2/errors v1.0.0/go.mod h1:jK9foHSHVKNg0IVpyLZXFiBIA44yuxca2+wlgCyP2uQ=
 go.felesatra.moe/xdg v0.0.0-20180609034518-93689817508c h1:zt7KbW62b86ogHGvbq4TlxM5AWgwkxvSfjkoVgUTdNw=
 go.felesatra.moe/xdg v0.0.0-20180609034518-93689817508c/go.mod h1:PA/TEhZdEMC3MpbKiuYdx3i8QbsiXhzQPBZLT557LVg=
 golang.org/x/net v0.0.0-20180218175443-cbe0f9307d01/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
@@ -17,3 +15,5 @@ golang.org/x/net v0.0.0-20180911220305-26e67e76b6c3 h1:czFLhve3vsQetD6JOJ8NZZvGQ
 golang.org/x/net v0.0.0-20180911220305-26e67e76b6c3/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/sys v0.0.0-20180909124046-d0be0721c37e h1:o3PsSEY8E4eXWkXrIP9YJALUkVZqzHJT5DOasTyn8Vs=
 golang.org/x/sys v0.0.0-20180909124046-d0be0721c37e/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
+golang.org/x/xerrors v0.0.0-20190212162355-a5947ffaace3 h1:P6iTFmrTQqWrqLZPX1VMzCUbCRCAUXSUsSpkEOvWzJ0=
+golang.org/x/xerrors v0.0.0-20190212162355-a5947ffaace3/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=

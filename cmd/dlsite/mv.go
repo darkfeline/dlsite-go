@@ -23,7 +23,7 @@ import (
 	"strings"
 
 	"github.com/google/subcommands"
-	"go.felesatra.moe/go2/errors"
+	"golang.org/x/xerrors"
 
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/dsutil"
@@ -73,7 +73,7 @@ func mvMain(path string, r dlsite.RJCode) error {
 	defer c.Close()
 	w, err := dsutil.Fetch(c, r)
 	if err != nil {
-		return errors.Wrap(err, "fetch work info")
+		return xerrors.Errorf("fetch work info: %w", err)
 	}
 	new := filepath.Join(filepath.Dir(path), workFilename(w))
 	if new == path {

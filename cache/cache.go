@@ -20,12 +20,11 @@ package cache
 import (
 	"bytes"
 	"encoding/gob"
-	"fmt"
 	"path/filepath"
 
 	bolt "github.com/coreos/bbolt"
-	"go.felesatra.moe/go2/errors"
 	"go.felesatra.moe/xdg"
+	"golang.org/x/xerrors"
 
 	"go.felesatra.moe/dlsite"
 )
@@ -46,7 +45,7 @@ func OpenDefault() (*Cache, error) {
 func Open(p string) (*Cache, error) {
 	db, err := bolt.Open(p, 0600, nil)
 	if err != nil {
-		return nil, errors.Wrap(err, "open dlsite cache")
+		return nil, xerrors.Errorf("open dlsite cache: %w", err)
 	}
 	return &Cache{db: db}, nil
 }
@@ -64,16 +63,16 @@ func (c *Cache) Get(r dlsite.RJCode) (*dlsite.Work, error) {
 	err := c.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(bucket)
 		if b == nil {
-			return errors.New("dlsite cache bucket missing")
+			return xerrors.New("dlsite cache bucket missing")
 		}
 		d := b.Get(encodeRJCode(r))
 		if d == nil {
-			return fmt.Errorf("dlsite cache get work %s: missing", r)
+			return xerrors.Errorf("dlsite cache get work %s: missing", r)
 		}
 		var err error
 		w, err = decodeWork(d)
 		if err != nil {
-			return errors.Wrap(err, "dlsite cache decode work")
+			return xerrors.Errorf("dlsite cache decode work: %w", err)
 		}
 		return nil
 	})
