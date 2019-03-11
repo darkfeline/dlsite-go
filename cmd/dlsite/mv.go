@@ -86,7 +86,7 @@ func mvMain(path string, r dlsite.RJCode) error {
 }
 
 func workFilename(w *dlsite.Work) string {
-	p := fmt.Sprintf("%s [%s] %s", w.RJCode, w.Maker, w.Name)
+	p := workInfoString(w)
 	return escapeFilename(p)
 }
 
