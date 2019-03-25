@@ -30,15 +30,15 @@ import (
 
 type nullCache struct{}
 
-func (_ nullCache) Close() error {
+func (nullCache) Close() error {
 	return nil
 }
 
-func (_ nullCache) Get(r dlsite.RJCode) (*dlsite.Work, error) {
+func (nullCache) Get(r dlsite.RJCode) (*dlsite.Work, error) {
 	return nil, xerrors.Errorf("get %s from NullCache", r)
 }
 
-func (_ nullCache) Put(w *dlsite.Work) error {
+func (nullCache) Put(w *dlsite.Work) error {
 	return nil
 }
 
