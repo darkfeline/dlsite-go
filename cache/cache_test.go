@@ -73,3 +73,42 @@ func TestPutAndGetWork(t *testing.T) {
 		t.Errorf("Expected %#v, got %#v", w, got)
 	}
 }
+
+func TestKeys(t *testing.T) {
+	t.Parallel()
+	d, err := ioutil.TempDir("", "test")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(d)
+	p := filepath.Join(d, "tmp.db")
+	c, err := Open(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer c.Close()
+	w := &dlsite.Work{
+		RJCode: "RJ1234",
+		Name:   "foobar",
+	}
+	err = c.Put(w)
+	if err != nil {
+		t.Fatal(err)
+	}
+	w = &dlsite.Work{
+		RJCode: "RJ1235",
+		Name:   "foobar",
+	}
+	err = c.Put(w)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ks, err := c.Keys()
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []dlsite.RJCode{"RJ1234", "RJ1235"}
+	if !reflect.DeepEqual(ks, want) {
+		t.Errorf("Got %#v; want %#v", ks, want)
+	}
+}

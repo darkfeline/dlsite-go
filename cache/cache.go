@@ -95,8 +95,29 @@ func (c *Cache) Put(w *dlsite.Work) error {
 	})
 }
 
+// Keys returns all of the keys in the cache.
+func (c *Cache) Keys() ([]dlsite.RJCode, error) {
+	var ks []dlsite.RJCode
+	err := c.db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(bucket)
+		if b == nil {
+			return xerrors.New("dlsite cache bucket missing")
+		}
+		b.ForEach(func(k, v []byte) error {
+			ks = append(ks, decodeRJCode(k))
+			return nil
+		})
+		return nil
+	})
+	return ks, err
+}
+
 func encodeRJCode(c dlsite.RJCode) []byte {
 	return []byte(c)
+}
+
+func decodeRJCode(b []byte) dlsite.RJCode {
+	return dlsite.RJCode(b)
 }
 
 func encodeWork(w *dlsite.Work) []byte {
