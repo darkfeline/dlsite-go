@@ -32,6 +32,7 @@ func main() {
 	subcommands.Register(&listCmd{}, "")
 	subcommands.Register(&mvCmd{}, "")
 	subcommands.Register(&orgCmd{}, "")
+	subcommands.Register(&refreshCmd{}, "")
 	flag.Parse()
 	ctx := context.Background()
 	os.Exit(int(subcommands.Execute(ctx)))
