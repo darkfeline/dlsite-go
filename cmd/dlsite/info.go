@@ -22,7 +22,6 @@ import (
 	"os"
 
 	"github.com/google/subcommands"
-	"golang.org/x/xerrors"
 
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/dsutil"
@@ -65,7 +64,7 @@ func printInfo(r dlsite.RJCode) error {
 	defer c.Close()
 	w, err := dsutil.Fetch(c, r)
 	if err != nil {
-		return xerrors.Errorf("fetch work info: %w", err)
+		return fmt.Errorf("fetch work info: %w", err)
 	}
 	printWork(os.Stdout, w)
 	return nil

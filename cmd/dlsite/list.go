@@ -23,7 +23,6 @@ import (
 	"os"
 
 	"github.com/google/subcommands"
-	"golang.org/x/xerrors"
 
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/dsutil"
@@ -60,7 +59,7 @@ func listMain(c *listCmd) error {
 		return mapCodes(os.Stdin, func(r dlsite.RJCode) error {
 			w, err := dsutil.Fetch(c, r)
 			if err != nil {
-				return xerrors.Errorf("fetch work: %w", err)
+				return fmt.Errorf("fetch work: %w", err)
 			}
 			printWork(os.Stdout, w)
 			os.Stdout.Write([]byte("\n"))

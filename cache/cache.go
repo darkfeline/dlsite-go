@@ -20,11 +20,12 @@ package cache
 import (
 	"bytes"
 	"encoding/gob"
+	"errors"
+	"fmt"
 	"path/filepath"
 
 	bolt "github.com/coreos/bbolt"
 	"go.felesatra.moe/xdg"
-	"golang.org/x/xerrors"
 
 	"go.felesatra.moe/dlsite"
 )
@@ -45,7 +46,7 @@ func OpenDefault() (*Cache, error) {
 func Open(p string) (*Cache, error) {
 	db, err := bolt.Open(p, 0600, nil)
 	if err != nil {
-		return nil, xerrors.Errorf("open dlsite cache: %w", err)
+		return nil, fmt.Errorf("open dlsite cache: %w", err)
 	}
 	return &Cache{db: db}, nil
 }
@@ -63,16 +64,16 @@ func (c *Cache) Get(r dlsite.RJCode) (*dlsite.Work, error) {
 	err := c.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(bucket)
 		if b == nil {
-			return xerrors.New("dlsite cache bucket missing")
+			return errors.New("dlsite cache bucket missing")
 		}
 		d := b.Get(encodeRJCode(r))
 		if d == nil {
-			return xerrors.Errorf("dlsite cache missing %s", r)
+			return fmt.Errorf("dlsite cache missing %s", r)
 		}
 		var err error
 		w, err = decodeWork(d)
 		if err != nil {
-			return xerrors.Errorf("dlsite cache decode work: %w", err)
+			return fmt.Errorf("dlsite cache decode work: %w", err)
 		}
 		return nil
 	})
@@ -101,7 +102,7 @@ func (c *Cache) Keys() ([]dlsite.RJCode, error) {
 	err := c.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(bucket)
 		if b == nil {
-			return xerrors.New("dlsite cache bucket missing")
+			return errors.New("dlsite cache bucket missing")
 		}
 		b.ForEach(func(k, v []byte) error {
 			ks = append(ks, decodeRJCode(k))

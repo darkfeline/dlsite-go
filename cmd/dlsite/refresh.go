@@ -25,7 +25,6 @@ import (
 	"github.com/google/subcommands"
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/cache"
-	"golang.org/x/xerrors"
 )
 
 type refreshCmd struct {
@@ -69,11 +68,11 @@ func (c *refreshCmd) Execute(ctx context.Context, f *flag.FlagSet, _ ...interfac
 func refreshWork(c *cache.Cache, r dlsite.RJCode) error {
 	w, err := dlsite.Fetch(r)
 	if err != nil {
-		return xerrors.Errorf("refresh work %v: %w", r, err)
+		return fmt.Errorf("refresh work %v: %w", r, err)
 	}
 	if err := c.Put(w); err != nil {
 
-		return xerrors.Errorf("refresh work %v: %w", r, err)
+		return fmt.Errorf("refresh work %v: %w", r, err)
 
 	}
 	return nil

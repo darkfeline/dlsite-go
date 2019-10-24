@@ -25,7 +25,6 @@ import (
 	"strings"
 
 	"github.com/google/subcommands"
-	"golang.org/x/xerrors"
 
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/cache"
@@ -83,11 +82,11 @@ func orgMain(dir string, dry, all, desc bool) error {
 		w, err = findWorks(dir)
 	}
 	if err != nil {
-		return xerrors.Errorf("find works: %w", err)
+		return fmt.Errorf("find works: %w", err)
 	}
 	c, err := cache.OpenDefault()
 	if err != nil {
-		return xerrors.Errorf("open cache: %w", err)
+		return fmt.Errorf("open cache: %w", err)
 	}
 	defer c.Close()
 	for _, w := range w {
@@ -142,7 +141,7 @@ func findAllWorks(dir string) ([]relPath, error) {
 		return nil
 	})
 	if err != nil {
-		return nil, xerrors.Errorf("walk: %w", err)
+		return nil, fmt.Errorf("walk: %w", err)
 	}
 	return w, nil
 }
@@ -153,7 +152,7 @@ func findAllWorks(dir string) ([]relPath, error) {
 func organizeWork(c *cache.Cache, topdir string, p relPath, dry, desc bool) error {
 	w, err := getDirWork(c, string(p))
 	if err != nil {
-		return xerrors.Errorf("get work info: %w", err)
+		return fmt.Errorf("get work info: %w", err)
 	}
 	new := workPath(w)
 	if dry {
@@ -165,7 +164,7 @@ func organizeWork(c *cache.Cache, topdir string, p relPath, dry, desc bool) erro
 	if desc {
 		log.Printf("Adding description files for %s", p)
 		if err := addDLSiteFiles(w, p.relativeTo(topdir)); err != nil {
-			return xerrors.Errorf("add desc files: %w", err)
+			return fmt.Errorf("add desc files: %w", err)
 		}
 	}
 	if new == p {
@@ -173,7 +172,7 @@ func organizeWork(c *cache.Cache, topdir string, p relPath, dry, desc bool) erro
 	}
 	log.Printf("Moving %s", p)
 	if err := renameWork(topdir, p, new); err != nil {
-		return xerrors.Errorf("rename work: %w", err)
+		return fmt.Errorf("rename work: %w", err)
 	}
 	return nil
 }

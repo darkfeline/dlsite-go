@@ -15,11 +15,11 @@
 package hvdb
 
 import (
+	"fmt"
 	"io"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"golang.org/x/xerrors"
 
 	"go.felesatra.moe/dlsite"
 )
@@ -27,7 +27,7 @@ import (
 func parseWork(r io.Reader) (*Work, error) {
 	d, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
-		return nil, xerrors.Errorf("cannot parse document: %w", err)
+		return nil, fmt.Errorf("cannot parse document: %w", err)
 	}
 	w := &Work{
 		RJCode:       parseRJCode(d),

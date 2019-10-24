@@ -19,9 +19,8 @@ information.
 package dsutil
 
 import (
+	"fmt"
 	"log"
-
-	"golang.org/x/xerrors"
 
 	"go.felesatra.moe/dlsite"
 	"go.felesatra.moe/dlsite/cache"
@@ -35,7 +34,7 @@ func (nullCache) Close() error {
 }
 
 func (nullCache) Get(r dlsite.RJCode) (*dlsite.Work, error) {
-	return nil, xerrors.Errorf("get %s from NullCache", r)
+	return nil, fmt.Errorf("get %s from NullCache", r)
 }
 
 func (nullCache) Put(w *dlsite.Work) error {
@@ -74,7 +73,7 @@ func Fetch(c Cache, r dlsite.RJCode) (*dlsite.Work, error) {
 		log.Printf("Error fetching from DLSite: %s", err)
 		hw, err := hvdb.Fetch(r)
 		if err != nil {
-			return nil, xerrors.Errorf("fetch from HVDB: %w", err)
+			return nil, fmt.Errorf("fetch from HVDB: %w", err)
 		}
 		w = convertWork(hw)
 	}

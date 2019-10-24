@@ -20,7 +20,6 @@ import (
 	"net/http"
 
 	"go.felesatra.moe/dlsite"
-	"golang.org/x/xerrors"
 )
 
 // Work holds information about a work.  If information for a field is
@@ -43,12 +42,12 @@ type Work struct {
 func Fetch(c dlsite.RJCode) (*Work, error) {
 	r, err := requestPage(c)
 	if err != nil {
-		return nil, xerrors.Errorf("requesting %s: %w", c, err)
+		return nil, fmt.Errorf("requesting %s: %w", c, err)
 	}
 	defer r.Body.Close()
 	w, err := parseWork(r.Body)
 	if err != nil {
-		return nil, xerrors.Errorf("parse work: %w", err)
+		return nil, fmt.Errorf("parse work: %w", err)
 	}
 	return w, nil
 }
@@ -58,15 +57,15 @@ func Fetch(c dlsite.RJCode) (*Work, error) {
 func requestPage(c dlsite.RJCode) (*http.Response, error) {
 	r, err := http.Get(hvdbURL(c))
 	if err != nil {
-		return nil, xerrors.Errorf("getting %s: %w", hvdbURL(c), err)
+		return nil, fmt.Errorf("getting %s: %w", hvdbURL(c), err)
 	}
 	if r.StatusCode == 404 {
 		r.Body.Close()
-		return nil, xerrors.Errorf("Cannot find %s", c)
+		return nil, fmt.Errorf("Cannot find %s", c)
 	}
 	if r.StatusCode != 200 {
 		r.Body.Close()
-		return nil, xerrors.Errorf("GET %s: HTTP %d %s", hvdbURL(c), r.StatusCode, r.Status)
+		return nil, fmt.Errorf("GET %s: HTTP %d %s", hvdbURL(c), r.StatusCode, r.Status)
 	}
 	return r, nil
 }

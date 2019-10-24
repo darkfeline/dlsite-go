@@ -15,17 +15,17 @@
 package dlsite
 
 import (
+	"fmt"
 	"io"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"golang.org/x/xerrors"
 )
 
 func parseWork(c RJCode, r io.Reader) (*Work, error) {
 	d, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
-		return nil, xerrors.Errorf("cannot parse document: %w", err)
+		return nil, fmt.Errorf("cannot parse document: %w", err)
 	}
 	w := &Work{
 		RJCode:      c,

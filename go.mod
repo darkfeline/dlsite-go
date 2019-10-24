@@ -9,5 +9,6 @@ require (
 	go.felesatra.moe/xdg v0.0.0-20180609034518-93689817508c
 	golang.org/x/net v0.0.0-20180911220305-26e67e76b6c3 // indirect
 	golang.org/x/sys v0.0.0-20180909124046-d0be0721c37e // indirect
-	golang.org/x/xerrors v0.0.0-20190212162355-a5947ffaace3
 )
+
+go 1.13

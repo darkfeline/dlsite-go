@@ -21,8 +21,6 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
-
-	"golang.org/x/xerrors"
 )
 
 // RJCode is the type for RJ code strings.  Use Parse to get RJCode
@@ -70,12 +68,12 @@ func Parse(s string) RJCode {
 func Fetch(c RJCode) (*Work, error) {
 	r, err := requestPage(c)
 	if err != nil {
-		return nil, xerrors.Errorf("requesting %s: %w", c, err)
+		return nil, fmt.Errorf("requesting %s: %w", c, err)
 	}
 	defer r.Body.Close()
 	w, err := parseWork(c, r.Body)
 	if err != nil {
-		return nil, xerrors.Errorf("parse work: %w", err)
+		return nil, fmt.Errorf("parse work: %w", err)
 	}
 	return w, nil
 }
@@ -85,7 +83,7 @@ func Fetch(c RJCode) (*Work, error) {
 func requestPage(c RJCode) (*http.Response, error) {
 	r, err := http.Get(workURL(c))
 	if err != nil {
-		return nil, xerrors.Errorf("getting %s: %w", workURL(c), err)
+		return nil, fmt.Errorf("getting %s: %w", workURL(c), err)
 	}
 	if r.StatusCode == 404 {
 		r.Body.Close()
@@ -93,7 +91,7 @@ func requestPage(c RJCode) (*http.Response, error) {
 	}
 	if r.StatusCode != 200 {
 		r.Body.Close()
-		return nil, xerrors.Errorf("GET %s: HTTP %d %s", workURL(c), r.StatusCode, r.Status)
+		return nil, fmt.Errorf("GET %s: HTTP %d %s", workURL(c), r.StatusCode, r.Status)
 	}
 	return r, nil
 }
@@ -101,15 +99,15 @@ func requestPage(c RJCode) (*http.Response, error) {
 func requestAnnouncePage(c RJCode) (*http.Response, error) {
 	r, err := http.Get(announceURL(c))
 	if err != nil {
-		return nil, xerrors.Errorf("getting %s: %w", announceURL(c), err)
+		return nil, fmt.Errorf("getting %s: %w", announceURL(c), err)
 	}
 	if r.StatusCode == 404 {
 		r.Body.Close()
-		return nil, xerrors.Errorf("Cannot find %s", c)
+		return nil, fmt.Errorf("Cannot find %s", c)
 	}
 	if r.StatusCode != 200 {
 		r.Body.Close()
-		return nil, xerrors.Errorf("GET %s: HTTP %d %s", announceURL(c), r.StatusCode, r.Status)
+		return nil, fmt.Errorf("GET %s: HTTP %d %s", announceURL(c), r.StatusCode, r.Status)
 	}
 	return r, nil
 }
