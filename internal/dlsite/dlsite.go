@@ -49,12 +49,12 @@ type Work struct {
 func FetchWork(c codes.RJCode) (*Work, error) {
 	r, err := requestPage(c)
 	if err != nil {
-		return nil, fmt.Errorf("requesting %s: %w", c, err)
+		return nil, fmt.Errorf("fetch from dlsite: %w", err)
 	}
 	defer r.Body.Close()
 	w, err := parseWork(c, r.Body)
 	if err != nil {
-		return nil, fmt.Errorf("parse work: %w", err)
+		return nil, fmt.Errorf("fetch from dlsite: %w", err)
 	}
 	return w, nil
 }
@@ -64,7 +64,7 @@ func FetchWork(c codes.RJCode) (*Work, error) {
 func requestPage(c codes.RJCode) (*http.Response, error) {
 	r, err := http.Get(workURL(c))
 	if err != nil {
-		return nil, fmt.Errorf("getting %s: %w", workURL(c), err)
+		return nil, fmt.Errorf("GET %s: %w", workURL(c), err)
 	}
 	if r.StatusCode == 404 {
 		r.Body.Close()
@@ -72,7 +72,7 @@ func requestPage(c codes.RJCode) (*http.Response, error) {
 	}
 	if r.StatusCode != 200 {
 		r.Body.Close()
-		return nil, fmt.Errorf("GET %s: HTTP %d %s", workURL(c), r.StatusCode, r.Status)
+		return nil, fmt.Errorf("GET %s: HTTP %s", workURL(c), r.Status)
 	}
 	return r, nil
 }
@@ -80,15 +80,11 @@ func requestPage(c codes.RJCode) (*http.Response, error) {
 func requestAnnouncePage(c codes.RJCode) (*http.Response, error) {
 	r, err := http.Get(announceURL(c))
 	if err != nil {
-		return nil, fmt.Errorf("getting %s: %w", announceURL(c), err)
-	}
-	if r.StatusCode == 404 {
-		r.Body.Close()
-		return nil, fmt.Errorf("Cannot find %s", c)
+		return nil, fmt.Errorf("GET %s: %w", workURL(c), err)
 	}
 	if r.StatusCode != 200 {
 		r.Body.Close()
-		return nil, fmt.Errorf("GET %s: HTTP %d %s", announceURL(c), r.StatusCode, r.Status)
+		return nil, fmt.Errorf("GET %s: HTTP %s", workURL(c), r.Status)
 	}
 	return r, nil
 }
