@@ -19,6 +19,7 @@ import (
 	"encoding/gob"
 	"errors"
 	"fmt"
+	"log"
 	"path/filepath"
 
 	"go.felesatra.moe/xdg"
@@ -78,12 +79,21 @@ func (f *Fetcher) FetchWork(c codes.WorkCode) (*Work, error) {
 	}
 	w := &Work{}
 	// TODO: Validate RJ code
+	var ok bool
 	if err := fillWorkFromHVDB(w, codes.RJCode(c)); err != nil {
-		return nil, fmt.Errorf("dlsite: %s", err)
+		log.Printf("dlsite: %s", err)
+	} else {
+		ok = true
 	}
 	if err := fillWorkFromDLSite(w, codes.RJCode(c)); err != nil {
-		return nil, fmt.Errorf("dlsite: %s", err)
+		log.Printf("dlsite: %s", err)
+	} else {
+		ok = true
 	}
+	if !ok {
+		return nil, fmt.Errorf("dlsite: fetch work %s: all methods failed", c)
+	}
+	f.putCached(c, w)
 	return w, nil
 }
 
