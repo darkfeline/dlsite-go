@@ -33,19 +33,20 @@ func announceURL(c codes.RJCode) string {
 // Work holds information about a DLSite work.  If information for a
 // field is missing, it will be the zero value.
 type Work struct {
-	RJCode      codes.RJCode
-	Name        string
+	Code        codes.RJCode
+	Title       string
 	Circle      string
 	Series      string
 	Description string
 }
 
-// Fetch returns the Work for the codes.RJCode by parsing the corresponding
-// DLSite page.  Errors from the HTTP request or from parsing the HTML
+// FetchWork returns the Work for the codes.RJCode by parsing the
+// corresponding DLSite page.
+// Errors from the HTTP request or from parsing the HTML
 // of the page are returned, but errors from parsing specific
-// information from the page are not returned.  Not all fields will be
-// present for all works, like Series or TrackList.
-func Fetch(c codes.RJCode) (*Work, error) {
+// information from the page are not returned.
+// Not all fields will be present for all works, like Series.
+func FetchWork(c codes.RJCode) (*Work, error) {
 	r, err := requestPage(c)
 	if err != nil {
 		return nil, fmt.Errorf("requesting %s: %w", c, err)

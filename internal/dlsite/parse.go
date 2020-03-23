@@ -29,8 +29,8 @@ func parseWork(c codes.RJCode, r io.Reader) (*Work, error) {
 		return nil, fmt.Errorf("cannot parse document: %w", err)
 	}
 	w := &Work{
-		RJCode:      c,
-		Name:        parseName(d),
+		Code:        c,
+		Title:       parseTitle(d),
 		Circle:      parseCircle(d),
 		Series:      parseSeries(d),
 		Description: parseDescription(d),
@@ -38,7 +38,7 @@ func parseWork(c codes.RJCode, r io.Reader) (*Work, error) {
 	return w, nil
 }
 
-func parseName(d *goquery.Document) string {
+func parseTitle(d *goquery.Document) string {
 	return strings.TrimSpace(d.Find("#work_name").Find("a").Text())
 }
 

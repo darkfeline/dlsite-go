@@ -81,7 +81,10 @@ func (f *Fetcher) FetchWork(c codes.WorkCode) (*Work, error) {
 	if err := fillWorkFromHVDB(w, codes.RJCode(c)); err != nil {
 		return nil, fmt.Errorf("dlsite: %s", err)
 	}
-	panic("Not implemented")
+	if err := fillWorkFromDLSite(w, codes.RJCode(c)); err != nil {
+		return nil, fmt.Errorf("dlsite: %s", err)
+	}
+	return w, nil
 }
 
 // FlushCache flushes the cache, reading and writing changes from the cache file.
