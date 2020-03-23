@@ -26,6 +26,8 @@ import (
 
 	"go.felesatra.moe/dlsite/v2/codes"
 	"go.felesatra.moe/dlsite/v2/internal/caching"
+	"go.felesatra.moe/dlsite/v2/internal/dlsite"
+	"go.felesatra.moe/dlsite/v2/internal/hvdb"
 )
 
 func init() {
@@ -77,23 +79,35 @@ func (f *Fetcher) FetchWork(c codes.WorkCode) (*Work, error) {
 	if w := f.getCached(c); w != nil {
 		return w, nil
 	}
-	w := &Work{}
-	// TODO: Validate RJ code
-	var ok bool
-	if err := fillWorkFromHVDB(w, codes.RJCode(c)); err != nil {
-		log.Printf("dlsite: %s", err)
-	} else {
-		ok = true
-	}
-	if err := fillWorkFromDLSite(w, codes.RJCode(c)); err != nil {
-		log.Printf("dlsite: %s", err)
-	} else {
-		ok = true
-	}
-	if !ok {
-		return nil, fmt.Errorf("dlsite: fetch work %s: all methods failed", c)
+	w, err := f.fetchWork(c)
+	if err != nil {
+		return nil, fmt.Errorf("dlsite: %s", err)
 	}
 	f.putCached(c, w)
+	return w, nil
+}
+
+func (*Fetcher) fetchWork(c codes.WorkCode) (*Work, error) {
+	w := &Work{}
+	var ok bool
+	// TODO: Validate RJ code
+	dw, err := dlsite.FetchWork(codes.RJCode(c))
+	if err != nil {
+		log.Printf("dlsite: %s", err)
+	} else {
+		ok = true
+		fillWorkFromDLSite(w, dw)
+	}
+	if len(dw.WorkFormats) == 0 || dw.WorkFormats[0] == "ボイス・ASMR" {
+		if err := fillWorkFromHVDB(w, codes.RJCode(c)); err != nil {
+			log.Printf("dlsite: %s", err)
+		} else {
+			ok = true
+		}
+	}
+	if !ok {
+		return nil, fmt.Errorf("fetch work %s: all methods failed", c)
+	}
 	return w, nil
 }
 
@@ -160,4 +174,45 @@ func (freshOption) fetcherOption() {}
 // path is provided.
 func ForceFresh() FetcherOption {
 	return freshOption{}
+}
+
+func fillWorkFromDLSite(w *Work, dw *dlsite.Work) {
+	if dw.Code != "" {
+		w.Code = codes.WorkCode(dw.Code)
+	}
+	if dw.Title != "" {
+		w.Title = dw.Title
+	}
+	if dw.Circle != "" {
+		w.Circle = dw.Circle
+	}
+	if dw.Series != "" {
+		w.Series = dw.Series
+	}
+	if dw.Description != "" {
+		w.Description = dw.Description
+	}
+}
+
+func fillWorkFromHVDB(w *Work, c codes.RJCode) error {
+	hw, err := hvdb.FetchWork(c)
+	if err != nil {
+		return err
+	}
+	if hw.Code != "" {
+		w.Code = codes.WorkCode(hw.Code)
+	}
+	if hw.Title != "" {
+		w.Title = hw.Title
+	}
+	if hw.EnglishTitle != "" {
+		w.EnglishTitle = hw.EnglishTitle
+	}
+	if hw.Circle != "" {
+		w.Circle = hw.Circle
+	}
+	w.CVs = append(w.CVs, hw.CVs...)
+	w.Tags = append(w.Tags, hw.Tags...)
+	w.SFW = hw.SFW
+	return nil
 }

@@ -33,6 +33,7 @@ func parseWork(c codes.RJCode, r io.Reader) (*Work, error) {
 		Title:       parseTitle(d),
 		Circle:      parseCircle(d),
 		Series:      parseSeries(d),
+		WorkFormats: parseWorkFormats(d),
 		Description: parseDescription(d),
 	}
 	return w, nil
@@ -53,6 +54,18 @@ func parseSeries(d *goquery.Document) string {
 	return strings.TrimSpace(d.
 		Find("#work_outline").
 		Find(`th:contains("シリーズ名")`).Next().Text())
+}
+
+func parseWorkFormats(d *goquery.Document) []string {
+	var f []string
+	spans := d.Find("div.work_genre").
+		Slice(1, 2).
+		Find("span")
+	for i := 0; i < spans.Length(); i++ {
+		n := spans.Get(i)
+		f = append(f, n.FirstChild.Data)
+	}
+	return f
 }
 
 func parseDescription(d *goquery.Document) string {
