@@ -98,7 +98,7 @@ func (*Fetcher) fetchWork(c codes.WorkCode) (*Work, error) {
 		ok = true
 		fillWorkFromDLSite(w, dw)
 	}
-	if len(dw.WorkFormats) == 0 || dw.WorkFormats[0] == "ボイス・ASMR" {
+	if dw == nil || len(dw.WorkFormats) == 0 || dw.WorkFormats[0] == "ボイス・ASMR" {
 		if err := fillWorkFromHVDB(w, codes.RJCode(c)); err != nil {
 			log.Printf("dlsite: %s", err)
 		} else {
