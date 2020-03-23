@@ -100,7 +100,11 @@ func (f *Fetcher) getCached(c codes.WorkCode) *Work {
 	if f.cmap == nil || f.forceFresh {
 		return nil
 	}
-	return f.cmap.Get(c).(*Work)
+	w, ok := f.cmap.Get(c).(*Work)
+	if !ok {
+		return nil
+	}
+	return w
 }
 
 func (f *Fetcher) putCached(c codes.WorkCode, w *Work) {
