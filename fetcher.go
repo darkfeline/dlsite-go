@@ -49,9 +49,8 @@ type Work struct {
 
 // A Fetcher can fetch DLSite work information.
 type Fetcher struct {
-	cachePath  string
-	cmap       *caching.Map
-	forceFresh bool
+	cachePath string
+	cmap      *caching.Map
 }
 
 // NewFetcher creates a new Fetcher.
@@ -75,8 +74,9 @@ func NewFetcher(o ...FetcherOption) (*Fetcher, error) {
 }
 
 // FetchWork fetches information for a DLSite work.
-func (f *Fetcher) FetchWork(c codes.WorkCode) (*Work, error) {
-	if w := f.getCached(c); w != nil {
+func (f *Fetcher) FetchWork(c codes.WorkCode, o ...FetchWorkOption) (*Work, error) {
+	opts := mergeOptions(o...)
+	if w := f.getCached(opts, c); w != nil {
 		return w, nil
 	}
 	w, err := f.fetchWork(c)
@@ -120,8 +120,8 @@ func (f *Fetcher) FlushCache() error {
 	return f.cmap.Flush()
 }
 
-func (f *Fetcher) getCached(c codes.WorkCode) *Work {
-	if f.cmap == nil || f.forceFresh {
+func (f *Fetcher) getCached(o fetchWorkOptions, c codes.WorkCode) *Work {
+	if o.ignoreCache || f.cmap == nil {
 		return nil
 	}
 	w, ok := f.cmap.Get(c).(*Work)
@@ -160,20 +160,37 @@ func CachePath(path string) FetcherOption {
 	return cacheOption{path}
 }
 
-type freshOption struct{}
-
-func (o freshOption) apply(f *Fetcher) {
-	f.forceFresh = true
+// A FetchWorkOption can be passed to FetchWork to configure fetching.
+type FetchWorkOption interface {
+	apply(fetchWorkOptions) fetchWorkOptions
+	fetchWorkOption()
 }
 
-func (freshOption) fetcherOption() {}
+type fetchWorkOptions struct {
+	ignoreCache bool
+}
 
-// ForceFresh makes the Fetcher ignore the cache when getting work
-// information.
-// Updated work information is still added to the cache if a cache
-// path is provided.
-func ForceFresh() FetcherOption {
-	return freshOption{}
+func mergeOptions(o ...FetchWorkOption) fetchWorkOptions {
+	var opts fetchWorkOptions
+	for _, o := range o {
+		opts = o.apply(opts)
+	}
+	return opts
+}
+
+type ignoreCacheOption struct{}
+
+func (ignoreCacheOption) apply(o fetchWorkOptions) fetchWorkOptions {
+	o.ignoreCache = true
+	return o
+}
+
+func (ignoreCacheOption) fetchWorkOption() {}
+
+// IgnoreCache returns an option that ignores the cache when fetching.
+// Updated work information is still added to the cache.
+func IgnoreCache() FetchWorkOption {
+	return ignoreCacheOption{}
 }
 
 func fillWorkFromDLSite(w *Work, dw *dlsite.Work) {
