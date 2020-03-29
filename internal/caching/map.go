@@ -18,6 +18,7 @@
 package caching
 
 import (
+	"compress/gzip"
 	"encoding/gob"
 	"fmt"
 	"io"
@@ -47,8 +48,8 @@ func Open(p string) (*Map, error) {
 		return nil, fmt.Errorf("open caching map: %s", err)
 	}
 	defer f.Close()
-	if err := gob.NewDecoder(f).Decode(&m.cached); err != nil {
-		return nil, fmt.Errorf("open caching map %s: %s", p, err)
+	if err := m.readFrom(f); err != nil {
+		return nil, fmt.Errorf("open caching map: %s", err)
 	}
 	return m, nil
 }
@@ -75,8 +76,8 @@ func (m *Map) Flush() error {
 		return fmt.Errorf("flush caching map: %s", err)
 	}
 	defer f.Close()
-	if err := gob.NewDecoder(f).Decode(&m.cached); err != nil && err != io.EOF {
-		return fmt.Errorf("flush caching map %s: %s", m.path, err)
+	if err := m.readFrom(f); err != nil {
+		return fmt.Errorf("flush caching map: %s", err)
 	}
 	if err := m.writeTo(f); err != nil {
 		return fmt.Errorf("flush caching map: %s", err)
@@ -87,12 +88,28 @@ func (m *Map) Flush() error {
 	return nil
 }
 
+func (m *Map) readFrom(f *lockedfile.File) error {
+	r, err := gzip.NewReader(f)
+	switch err {
+	case nil:
+	case io.EOF:
+		return nil
+	default:
+		return fmt.Errorf("read caching map %s: %s", f.Name(), err)
+	}
+	defer r.Close()
+	if err := gob.NewDecoder(r).Decode(&m.cached); err != nil {
+		return fmt.Errorf("read caching map %s: %s", f.Name(), err)
+	}
+	return nil
+}
+
 func (m *Map) writeTo(f *lockedfile.File) error {
 	if err := f.Truncate(0); err != nil {
 		return fmt.Errorf("write caching map: %s", err)
 	}
 	if _, err := f.Seek(0, 0); err != nil {
-		return fmt.Errorf("write caching map %s: %s", m.path, err)
+		return fmt.Errorf("write caching map %s: %s", f.Name(), err)
 	}
 	merged := make(map[codes.WorkCode]interface{})
 	for k, v := range m.cached {
@@ -101,8 +118,13 @@ func (m *Map) writeTo(f *lockedfile.File) error {
 	for k, v := range m.modified {
 		merged[k] = v
 	}
-	if err := gob.NewEncoder(f).Encode(merged); err != nil {
-		return fmt.Errorf("write caching map %s: %s", m.path, err)
+	w := gzip.NewWriter(f)
+	defer w.Close()
+	if err := gob.NewEncoder(w).Encode(merged); err != nil {
+		return fmt.Errorf("write caching map %s: %s", f.Name(), err)
+	}
+	if err := w.Close(); err != nil {
+		return fmt.Errorf("write caching map %s: %s", f.Name(), err)
 	}
 	return nil
 }
