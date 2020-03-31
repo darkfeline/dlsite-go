@@ -35,7 +35,7 @@ func TestParseWork(t *testing.T) {
 		Code:         c,
 		Title:        "籠の鳥",
 		EnglishTitle: "Caged Bird",
-		Circle:       "骨格ゼロ動物 / Kokkaku Zero Doubutsu",
+		Circle:       "骨格ゼロ動物",
 		Tags: []string{
 			"brunette hair",
 			"fellatio",
