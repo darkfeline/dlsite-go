@@ -67,9 +67,7 @@ func TestParseWorkWithBools(t *testing.T) {
 			"healing",
 			"moe",
 		},
-		CVs: []string{
-			"N/A",
-		},
+		CVs: []string{"桃箱"},
 		SFW: true,
 	}
 	testParseWork(t, c, want)

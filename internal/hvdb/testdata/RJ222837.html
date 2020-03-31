@@ -8,7 +8,6 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="google-site-verification" content="33ierOpHEX1atK2RRpn47lcODopagtwndFTr_1TmPlo" />
     <title>HVDB - RJ222837</title>
-<link href="/Content/dark?v=NLVuwYe3xHmpIfV1C54ksrJcnKOSbFSltYOUqzYSXAw1" rel="stylesheet"/>
     <link href="/Content/css?v=rFhqRJqhiYFeoVEoW3MbSAPSlRnK4x2CyOkT_ctu7ws1" rel="stylesheet"/>
 
     <link href="/Content/jqueryui?v=qXY2-7EgNWuAxtn1Mu6gtnoIeJDiPgCpUbNAmzsMPV01" rel="stylesheet"/>
@@ -44,25 +43,17 @@
                                     </span>
                                 </div>
 </form>                        </li>
-                            <li><a class="navbar-link" href="/Search">Search</a></li>
-                            <li><a class="navbar-link" href="/Dashboard/AllWorks/">All Works</a></li>
                         <li><a class="navbar-link" href="/Dashboard/Tags/">CVs/Tags</a></li>
                         <li><a class="navbar-link" href="/Dashboard/Random/">Random</a></li>
-                            <li><a class="navbar-link" href="/Dashboard/Index/">My Works</a></li>
-                            <li><a class="navbar-link" href="/Dashboard/RecentEdits/">Recent Edits</a></li>
-                            <li><a class="navbar-link" href="/Dashboard/Users/">Users</a></li>
 
                         <li><a class="navbar-link" href="/Dashboard/Pools/">Pools</a></li>
 
                     </ul>
 
-                    <form action="/Account/LogOff/" class="navbar-right" id="logoutForm" method="post"><input name="__RequestVerificationToken" type="hidden" value="Z64iNQz1v5GhVWIEi7C1xyQX-lcGYO3YXnpTp6khfeuTN76_1Gey_kEkuK-H7PCpImWucfEmneapPtxlks7aqDq9eINnevrbW-yyhq2tRm81qcSG8QUJaUU6dbTFQxRpSqxiPnN-_hYuq2huxmN36Q2" />    <ul class="nav navbar-nav navbar-right">
-        <li>
-            <a href="/Manage/Index/" title="Manage">Profile</a>
-        </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+                        <ul class="nav navbar-nav navbar-right">
+        <li><a href="/Account/Login/" id="loginLink">Log in</a></li>
     </ul>
-</form>
+
                 </div>
             </div>
         </div>
@@ -81,18 +72,17 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-6">
-            <img src="/WorkImages/RJ222837.jpg" class="detailImage" />
+            <img src="/WorkImages/RJ222837.jpg" class="detailImage"/>
         </div>
         <div class="col-md-6">
-<form action="/Dashboard/WorkDetails/222837" class="form-horizontal detail-form" id="workForm" method="post" role="form"><input name="__RequestVerificationToken" type="hidden" value="AtLjVQBW_Patni5pxTu3kQYgvrPGBQrcZR57EN16VPUhLrqseIk98Fv4yAoMf_LzRPlBqUdIHXgDcdZFWIIY7CxaFs9qJ5RtzY2jpCr6jqUCc-A5Zuh9A7JEtZ4z1e0auWKk2elqw2jBXwI_pmRWxQ2" /><input data-val="true" data-val-number="The field WorkId must be a number." data-val-required="The WorkId field is required." id="WorkId" name="WorkId" type="hidden" value="11590" /><input data-val="true" data-val-number="The field Clicked must be a number." data-val-required="The Clicked field is required." id="Clicked" name="Clicked" type="hidden" value="0" /><input data-val="true" data-val-number="The field CircleId must be a number." data-val-required="The CircleId field is required." id="CircleId" name="CircleId" type="hidden" value="167" /><input data-val="true" data-val-number="The field DLSiteCode must be a number." data-val-required="The DLSiteCode field is required." id="DLSiteCode" name="DLSiteCode" type="hidden" value="222837" /><input id="ImageURL" name="ImageURL" type="hidden" value="/WorkImages/RJ222837.jpg" /><input data-val="true" data-val-required="The DownloadLink field is required." id="DownloadLink" name="DownloadLink" type="hidden" value="False" />                <hr />
+<form action="/Dashboard/Details/222837" class="form-horizontal" method="post" role="form"><input name="__RequestVerificationToken" type="hidden" value="9cYt37GPhMJ6r4F3q8Xd0483nfY81bnidCADdPUkWJiEPhW1rf5dCywI5UgbICM-DZpWYXAgYcc2HqSzg_rkiFrke8S1SvQr_Q14o0SVd-o1" /><input data-val="true" data-val-number="The field WorkId must be a number." data-val-required="The WorkId field is required." id="WorkId" name="WorkId" type="hidden" value="11590" /><input data-val="true" data-val-number="The field CircleId must be a number." data-val-required="The CircleId field is required." id="CircleId" name="CircleId" type="hidden" value="167" /><input data-val="true" data-val-number="The field DLSiteCode must be a number." data-val-required="The DLSiteCode field is required." id="DLSiteCode" name="DLSiteCode" type="hidden" value="222837" /><input id="ImageURL" name="ImageURL" type="hidden" value="/WorkImages/RJ222837.jpg" />                <hr />
                 <div class="form-group">
                     <label class="col-md-2 control-label" for="Name">Title</label>
                     <div class="col-md-10">
                             <label class="infoLabel" id="circleLabel">
                                 籠の鳥
                             </label>
-                        <textarea class="form-control hiddenForm" cols="80" id="Name" name="Name" rows="2" style="max-width: 550px !important;">
-籠の鳥</textarea>
+                        <input class="form-control hiddenForm" disabled="true" id="Name" name="Name" type="text" value="籠の鳥" />
                     </div>
                 </div>
                 <div class="form-group">
@@ -101,8 +91,7 @@
                             <label class="infoLabel" id="circleLabel">
                                 Caged Bird
                             </label>
-                        <textarea class="form-control hiddenForm" cols="80" id="EngName" name="EngName" rows="2" style="max-width: 550px !important;">
-Caged Bird</textarea>
+                        <input class="form-control hiddenForm" disabled="true" id="EngName" name="EngName" type="text" value="Caged Bird" />
                     </div>
                 </div>
                 <div class="form-group">
@@ -119,37 +108,37 @@ Caged Bird</textarea>
                     <div class="col-md-10 infoLabel">
                         <ul class="tagit ui-widget ui-widget-content ui-corner-all">
                                 <li class="tagit-choice ui-widget-content ui-state-default ui-corner-all tagit-choice-editable displayTag">
-                                    <span class="tagit-label" style="text-align:center; margin: auto">
+                                    <span class="tagit-label displayTag" style="text-align:center; margin: auto">
                                         <a href="/Dashboard/TagWorks/371">brunette hair</a>
                                     </span>
                                 </li>
                                 <li class="tagit-choice ui-widget-content ui-state-default ui-corner-all tagit-choice-editable displayTag">
-                                    <span class="tagit-label" style="text-align:center; margin: auto">
+                                    <span class="tagit-label displayTag" style="text-align:center; margin: auto">
                                         <a href="/Dashboard/TagWorks/413">fellatio</a>
                                     </span>
                                 </li>
                                 <li class="tagit-choice ui-widget-content ui-state-default ui-corner-all tagit-choice-editable displayTag">
-                                    <span class="tagit-label" style="text-align:center; margin: auto">
+                                    <span class="tagit-label displayTag" style="text-align:center; margin: auto">
                                         <a href="/Dashboard/TagWorks/81">oral cumshot</a>
                                     </span>
                                 </li>
                                 <li class="tagit-choice ui-widget-content ui-state-default ui-corner-all tagit-choice-editable displayTag">
-                                    <span class="tagit-label" style="text-align:center; margin: auto">
+                                    <span class="tagit-label displayTag" style="text-align:center; margin: auto">
                                         <a href="/Dashboard/TagWorks/1389">removed work</a>
                                     </span>
                                 </li>
                                 <li class="tagit-choice ui-widget-content ui-state-default ui-corner-all tagit-choice-editable displayTag">
-                                    <span class="tagit-label" style="text-align:center; margin: auto">
+                                    <span class="tagit-label displayTag" style="text-align:center; margin: auto">
                                         <a href="/Dashboard/TagWorks/112">shrine maiden</a>
                                     </span>
                                 </li>
                                 <li class="tagit-choice ui-widget-content ui-state-default ui-corner-all tagit-choice-editable displayTag">
-                                    <span class="tagit-label" style="text-align:center; margin: auto">
+                                    <span class="tagit-label displayTag" style="text-align:center; margin: auto">
                                         <a href="/Dashboard/TagWorks/56">swallowing</a>
                                     </span>
                                 </li>
                                 <li class="tagit-choice ui-widget-content ui-state-default ui-corner-all tagit-choice-editable displayTag">
-                                    <span class="tagit-label" style="text-align:center; margin: auto">
+                                    <span class="tagit-label displayTag" style="text-align:center; margin: auto">
                                         <a href="/Dashboard/TagWorks/191">tentacle</a>
                                     </span>
                                 </li>
@@ -164,12 +153,12 @@ Caged Bird</textarea>
                     <div class="col-md-10 infoLabel">
                         <ul class="tagit ui-widget ui-widget-content ui-corner-all">
                                 <li class="tagit-choice ui-widget-content ui-state-default ui-corner-all tagit-choice-editable displayTag">
-                                    <span class="tagit-label" style="text-align:center; margin: auto">
+                                    <span class="tagit-label displayTag" style="text-align:center; margin: auto">
                                         <a href="/Dashboard/CVWorks/Kazuna%20Sayaka">Kazuna Sayaka</a>
                                     </span>
                                 </li>
                                 <li class="tagit-choice ui-widget-content ui-state-default ui-corner-all tagit-choice-editable displayTag">
-                                    <span class="tagit-label" style="text-align:center; margin: auto">
+                                    <span class="tagit-label displayTag" style="text-align:center; margin: auto">
                                         <a href="/Dashboard/CVWorks/%E8%A8%88%E5%90%8D%E3%81%95%E3%82%84%E9%A6%99">計名さや香</a>
                                     </span>
                                 </li>
@@ -182,99 +171,11 @@ Caged Bird</textarea>
                         <input class="detailCheck" data-val="true" data-val-required="The SFW field is required." disabled="true" id="SFW" name="SFW" type="checkbox" value="true" /><input name="SFW" type="hidden" value="false" />
                     </div>
                 </div>
-                <div class="form-group detailCheck">
-                    <label class="col-md-2 control-label" for="On_SFTP">On SFTP</label>
-                    <div class="col-md-10">
-                        <input class="detailCheck" data-val="true" data-val-required="The SFTP field is required." disabled="true" id="SFTP" name="SFTP" type="checkbox" value="true" /><input name="SFTP" type="hidden" value="false" />
-                    </div>
-                </div>
-                <div class="form-group detailCheck">
-                    <label class="col-md-2 control-label" for="On_IRC_Bot">On IRC Bot</label>
-                    <div class="col-md-10">
-                        <input class="detailCheck" data-val="true" data-val-required="The IRC field is required." disabled="true" id="IRC" name="IRC" type="checkbox" value="true" /><input name="IRC" type="hidden" value="false" />
-                    </div>
-                </div>
-                    <div class="form-group">
-                        <label class="col-md-2 control-label" for="Download">Download</label>
-                        <div class="col-md-10">
-                            <div class="btn-group downloadLink">
-                                    <button type="button" class="btn btn-default downloadLink" data-clipboard-text="https://mega.nz/#F!Hz5SiLTK!T4fKne5ReeYAge8lImhmVA">
-                                        Copy Download Link
-                                    </button>
-                                                                                                                                
-                            </div>  
-                            
-                            <input autocomplete="off" class="form-control hiddenForm" disabled="true" id="Download" name="Download" type="text" value="https://mega.nz/#F!Hz5SiLTK!T4fKne5ReeYAge8lImhmVA" />
-                        </div>
-                    </div>
-                    <div class="form-group hiddenForm">
-                        <label class="col-md-2 control-label" for="Password">Password</label>
-                        <div class="col-md-10">
-                            <input autocomplete="off" class="form-control hiddenForm" disabled="true" id="Password" name="Password" type="text" value="" />
-                        </div>
-                    </div>
-                    <div class="form-group hiddenForm">
-                        <label class="col-md-2 control-label" for="Download2">Download2</label>
-                        <div class="col-md-10">
-                            <input autocomplete="off" class="form-control hiddenForm" disabled="true" id="Download2" name="Download2" type="text" value="" />
-                        </div>
-                    </div>
-                    <div class="form-group hiddenForm">
-                        <label class="col-md-2 control-label" for="Password2">Password2</label>
-                        <div class="col-md-10">
-                            <input autocomplete="off" class="form-control hiddenForm" disabled="true" id="Password2" name="Password2" type="text" value="" />
-                        </div>
-                    </div>
-                    <div class="form-group hiddenForm">
-                        <label class="col-md-2 control-label" for="Download3">Download3</label>
-                        <div class="col-md-10">
-                            <input autocomplete="off" class="form-control hiddenForm" disabled="true" id="Download3" name="Download3" type="text" value="" />
-                        </div>
-                    </div>
-                    <div class="form-group hiddenForm">
-                        <label class="col-md-2 control-label" for="Password3">Password3</label>
-                        <div class="col-md-10">
-                            <input autocomplete="off" class="form-control hiddenForm" disabled="true" id="Password3" name="Password3" type="text" value="" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-2 control-label" for="DLSite_Size">DLSite Size</label>
-                        <div class="col-md-10">
-                            <label class="infoLabel" id="circleLabel">
-                                
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group hiddenForm">
-                        <label class="col-md-2 control-label" for="Magnet">Magnet</label>
-                        <div class="col-md-10">
-                            <input autocomplete="off" class="form-control hiddenForm" disabled="true" id="Magnet" name="Magnet" type="text" value="" />
-                        </div>
-                    </div>
-                <div class="form-group infoLabel">
-                    <div class="col-md-10 col-md-offset-2">
-                        <label class=" control-label" for="Downloaded_by">Downloaded by</label>
-
-                            <label class="infoLabel">
-                                228 Users
-                            </label>
-                    </div>
-                </div>
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10 btn-group">
-                        <button type="button" class="btn btn-default" onclick="editMode()" id="editButton">Edit</button>
-                        <input type="submit" value="Save" class="btn btn-default" id="saveButton" disabled="true" hidden="true" />
                         <a class="btn btn-default" href="/Dashboard/ScriptList/11590">View Scripts</a>
-                        <button type="button" class="btn btn-default" id="addButton">Add to My Works</button>
-                        <button type="button" class="btn btn-default" id="favoriteButton">Favorite</button>
-                        <a class="btn btn-default" href="/Dashboard/WorkEdits/11590">View Edits</a>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10 btn-group">
-
-                    </div>
-               </div>
 </form>        </div>
     </div>
 </div>
@@ -282,12 +183,6 @@ Caged Bird</textarea>
 
         </div>
         <div id="push"></div>
-    </div>
-    <div id="footer">
-        <ul class="list-inline" id="footerList">
-            <li><a href="/Dashboard/FAQ/">Metrics</a></li>
-            <li><a href="/Dashboard/Rules/">Rules</a></li>
-        </ul>
     </div>
 
     <script src="/bundles/bootstrap?v=xRi8xl1BeRS9G8jDu4qoNSvJC8-_0TYHw2IWw4Ktj4M1"></script>
@@ -297,14 +192,6 @@ Caged Bird</textarea>
     
     <script src="/bundles/workdetails?v=PVaDJssk0Y5NuC7PdwmJ2UCPHw2EzLA3SNAZ0rqAOfk1"></script>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#workForm").submit(function () {
-                $("#saveButton").attr("disabled", true);
-                return true;
-            });
-        });
-    </script>
 
     <script type="text/javascript">
         $(".adder-form").on('change textInput input', function () {

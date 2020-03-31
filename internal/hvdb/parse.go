@@ -44,12 +44,12 @@ func parseRJCode(d *goquery.Document) codes.RJCode {
 }
 
 func parseTitle(d *goquery.Document) string {
-	s := d.Find("#Name").Text()
+	s := strings.TrimSpace(d.Find(`label[for="Name"]`).Next().Text())
 	return strings.TrimSpace(s)
 }
 
 func parseEnglishTitle(d *goquery.Document) string {
-	s := d.Find("#EngName").Text()
+	s := strings.TrimSpace(d.Find(`label[for="EngName"]`).Next().Text())
 	return strings.TrimSpace(s)
 }
 
