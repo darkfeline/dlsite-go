@@ -219,13 +219,13 @@ func fillWorkFromHVDB(w *Work, c codes.RJCode) error {
 	if hw.Code != "" {
 		w.Code = codes.WorkCode(hw.Code)
 	}
-	if hw.Title != "" {
+	if w.Title != "" && hw.Title != "" {
 		w.Title = hw.Title
 	}
 	if hw.EnglishTitle != "" {
 		w.EnglishTitle = hw.EnglishTitle
 	}
-	if hw.Circle != "" {
+	if w.Circle == "" && hw.Circle != "" {
 		w.Circle = hw.Circle
 	}
 	w.CVs = append(w.CVs, hw.CVs...)
