@@ -219,7 +219,7 @@ func fillWorkFromHVDB(w *Work, c codes.RJCode) error {
 	if hw.Code != "" {
 		w.Code = codes.WorkCode(hw.Code)
 	}
-	if w.Title != "" && hw.Title != "" {
+	if w.Title == "" && hw.Title != "" {
 		w.Title = hw.Title
 	}
 	if hw.EnglishTitle != "" {
