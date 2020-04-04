@@ -77,40 +77,43 @@ func (m *Map) Flush() error {
 	}
 	defer f.Close()
 	if err := m.readFrom(f); err != nil {
+		return fmt.Errorf("flush caching map %s: %s", m.path, err)
+	}
+	tmp := m.path + ".new"
+	f2, err := os.Create(tmp)
+	if err != nil {
 		return fmt.Errorf("flush caching map: %s", err)
 	}
-	if err := m.writeTo(f); err != nil {
+	defer f2.Close()
+	if err := m.writeTo(f2); err != nil {
+		return fmt.Errorf("flush caching map %s: %s", tmp, err)
+	}
+	if err := f2.Close(); err != nil {
 		return fmt.Errorf("flush caching map: %s", err)
 	}
-	if err := f.Close(); err != nil {
+	if err := os.Rename(tmp, m.path); err != nil {
 		return fmt.Errorf("flush caching map: %s", err)
 	}
 	return nil
 }
 
-func (m *Map) readFrom(f *lockedfile.File) error {
+func (m *Map) readFrom(f io.Reader) error {
 	r, err := gzip.NewReader(f)
 	switch err {
 	case nil:
 	case io.EOF:
 		return nil
 	default:
-		return fmt.Errorf("read caching map %s: %s", f.Name(), err)
+		return fmt.Errorf("read caching map: %s", err)
 	}
 	defer r.Close()
 	if err := gob.NewDecoder(r).Decode(&m.cached); err != nil {
-		return fmt.Errorf("read caching map %s: %s", f.Name(), err)
+		return fmt.Errorf("read caching map: %s", err)
 	}
 	return nil
 }
 
-func (m *Map) writeTo(f *lockedfile.File) error {
-	if err := f.Truncate(0); err != nil {
-		return fmt.Errorf("write caching map: %s", err)
-	}
-	if _, err := f.Seek(0, 0); err != nil {
-		return fmt.Errorf("write caching map %s: %s", f.Name(), err)
-	}
+func (m *Map) writeTo(f io.Writer) error {
 	merged := make(map[codes.WorkCode]interface{})
 	for k, v := range m.cached {
 		merged[k] = v
@@ -121,10 +124,10 @@ func (m *Map) writeTo(f *lockedfile.File) error {
 	w := gzip.NewWriter(f)
 	defer w.Close()
 	if err := gob.NewEncoder(w).Encode(merged); err != nil {
-		return fmt.Errorf("write caching map %s: %s", f.Name(), err)
+		return fmt.Errorf("write caching map: %s", err)
 	}
 	if err := w.Close(); err != nil {
-		return fmt.Errorf("write caching map %s: %s", f.Name(), err)
+		return fmt.Errorf("write caching map: %s", err)
 	}
 	return nil
 }
