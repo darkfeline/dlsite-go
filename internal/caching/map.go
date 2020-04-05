@@ -79,6 +79,9 @@ func (m *Map) Flush() error {
 	if err := m.readFrom(f); err != nil {
 		return fmt.Errorf("flush caching map %s: %s", m.path, err)
 	}
+	if len(m.modified) == 0 {
+		return nil
+	}
 	tmp := m.path + ".new"
 	f2, err := os.Create(tmp)
 	if err != nil {
