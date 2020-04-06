@@ -18,119 +18,86 @@
 package caching
 
 import (
-	"compress/gzip"
+	"bytes"
+	"database/sql"
 	"encoding/gob"
 	"fmt"
-	"io"
-	"os"
+	"log"
 
 	"go.felesatra.moe/dlsite/v2/codes"
-	"go.felesatra.moe/dlsite/v2/internal/lockedfile"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type Map struct {
-	path     string
-	cached   map[codes.WorkCode]interface{}
-	modified map[codes.WorkCode]interface{}
+	path string
+	db   *sql.DB
 }
 
 func Open(p string) (*Map, error) {
 	m := &Map{
-		path:     p,
-		cached:   make(map[codes.WorkCode]interface{}),
-		modified: make(map[codes.WorkCode]interface{}),
+		path: p,
 	}
-	f, err := lockedfile.Open(p)
+	var err error
+	m.db, err = sql.Open("sqlite3", p)
 	if err != nil {
-		if os.IsNotExist(err) {
-			return m, nil
-		}
-		return nil, fmt.Errorf("open caching map: %s", err)
+		return nil, fmt.Errorf("open cache: %s", err)
 	}
-	defer f.Close()
-	if err := m.readFrom(f); err != nil {
-		return nil, fmt.Errorf("open caching map: %s", err)
+	if err := m.ensureTable(); err != nil {
+		return nil, fmt.Errorf("open cache: %s", err)
 	}
 	return m, nil
 }
 
-func (m *Map) Get(c codes.WorkCode) interface{} {
-	w, ok := m.modified[c]
-	if ok {
-		return w
-	}
-	w, ok = m.cached[c]
-	if ok {
-		return w
-	}
-	return nil
+func (m *Map) ensureTable() error {
+	_, err := m.db.Exec(`CREATE TABLE IF NOT EXISTS dlsite_works (
+code TEXT PRIMARY KEY,
+data BLOB
+)`)
+	return err
 }
 
-func (m *Map) Put(c codes.WorkCode, w interface{}) {
-	m.modified[c] = w
+func (m *Map) Get(c codes.WorkCode, v interface{}) {
+	r := m.db.QueryRow(`SELECT data FROM dlsite_works WHERE code = ?`, c)
+	var d []byte
+	if err := r.Scan(&d); err != nil {
+		log.Printf("cache get %s: %s", c, err)
+		return
+	}
+	if err := decode(d, v); err != nil {
+		panic(err)
+	}
 }
 
-func (m *Map) Flush() error {
-	f, err := lockedfile.Edit(m.path)
+func (m *Map) Put(c codes.WorkCode, v interface{}) {
+	d, err := encode(v)
 	if err != nil {
-		return fmt.Errorf("flush caching map: %s", err)
+		panic(err)
 	}
-	defer f.Close()
-	if err := m.readFrom(f); err != nil {
-		return fmt.Errorf("flush caching map %s: %s", m.path, err)
-	}
-	if len(m.modified) == 0 {
-		return nil
-	}
-	tmp := m.path + ".new"
-	f2, err := os.Create(tmp)
+	_, err = m.db.Exec(`INSERT INTO dlsite_works (code, data) VALUES (?, ?)`, c, d)
 	if err != nil {
-		return fmt.Errorf("flush caching map: %s", err)
+		panic(err)
 	}
-	defer f2.Close()
-	if err := m.writeTo(f2); err != nil {
-		return fmt.Errorf("flush caching map %s: %s", tmp, err)
-	}
-	if err := f2.Close(); err != nil {
-		return fmt.Errorf("flush caching map: %s", err)
-	}
-	if err := os.Rename(tmp, m.path); err != nil {
-		return fmt.Errorf("flush caching map: %s", err)
+}
+
+func (m *Map) Close() error {
+	if err := m.db.Close(); err != nil {
+		return fmt.Errorf("close cache: %s", err)
 	}
 	return nil
 }
 
-func (m *Map) readFrom(f io.Reader) error {
-	r, err := gzip.NewReader(f)
-	switch err {
-	case nil:
-	case io.EOF:
-		return nil
-	default:
-		return fmt.Errorf("read caching map: %s", err)
+func encode(v interface{}) ([]byte, error) {
+	var b bytes.Buffer
+	if err := gob.NewEncoder(&b).Encode(v); err != nil {
+		return nil, err
 	}
-	defer r.Close()
-	if err := gob.NewDecoder(r).Decode(&m.cached); err != nil {
-		return fmt.Errorf("read caching map: %s", err)
-	}
-	return nil
+	return b.Bytes(), nil
 }
 
-func (m *Map) writeTo(f io.Writer) error {
-	merged := make(map[codes.WorkCode]interface{})
-	for k, v := range m.cached {
-		merged[k] = v
-	}
-	for k, v := range m.modified {
-		merged[k] = v
-	}
-	w := gzip.NewWriter(f)
-	defer w.Close()
-	if err := gob.NewEncoder(w).Encode(merged); err != nil {
-		return fmt.Errorf("write caching map: %s", err)
-	}
-	if err := w.Close(); err != nil {
-		return fmt.Errorf("write caching map: %s", err)
+func decode(b []byte, v interface{}) error {
+	if err := gob.NewDecoder(bytes.NewReader(b)).Decode(v); err != nil {
+		return err
 	}
 	return nil
 }

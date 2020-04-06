@@ -55,7 +55,7 @@ func refreshWorks(r io.Reader) error {
 	if err != nil {
 		return err
 	}
-	defer df.FlushCache()
+	defer df.Close()
 	rand.Seed(time.Now().UnixNano())
 	const sleepMax = 2 * time.Second
 	scanner := bufio.NewScanner(r)

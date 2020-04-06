@@ -59,7 +59,7 @@ func listMain(c *listCmd) error {
 		if err != nil {
 			return fmt.Errorf("fetch work info: %w", err)
 		}
-		defer df.FlushCache()
+		defer df.Close()
 		return mapCodes(os.Stdin, func(r codes.RJCode) error {
 			w, err := df.FetchWork(codes.WorkCode(r))
 			if err != nil {

@@ -45,27 +45,30 @@ func TestMap(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Cleanup(func() { m.Close() })
 	c := codes.WorkCode("RJ123")
 	want := &Work{Title: "eyjafjalla"}
 	m.Put(c, want)
 	t.Run("get from modified", func(t *testing.T) {
-		got := m.Get(c).(*Work)
+		var got *Work
+		m.Get(c, &got)
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("Got %+v; want %+v", got, want)
 		}
 	})
-	if err := m.Flush(); err != nil {
-		t.Fatal(err)
-	}
+	m.Close()
 
 	m, err = Open(p)
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Cleanup(func() { m.Close() })
 	t.Run("get from saved", func(t *testing.T) {
-		got := m.Get(c).(*Work)
+		var got *Work
+		m.Get(c, &got)
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("Got %+v; want %+v", got, want)
 		}
 	})
+	m.Close()
 }

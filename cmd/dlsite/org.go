@@ -86,7 +86,7 @@ func orgMain(dir string, dry, all, desc bool) error {
 	if err != nil {
 		return fmt.Errorf("fetch work info: %w", err)
 	}
-	defer df.FlushCache()
+	defer df.Close()
 	for _, w := range w {
 		log.Printf("Organizing %s", w)
 		err := organizeWork(df, dir, w, dry, desc)

@@ -17,7 +17,6 @@ package dlsite
 
 import (
 	"encoding/gob"
-	"errors"
 	"fmt"
 	"log"
 	"path/filepath"
@@ -73,6 +72,14 @@ func NewFetcher(o ...FetcherOption) (*Fetcher, error) {
 	return f, nil
 }
 
+// Close closes resources used by the fetcher.
+func (f *Fetcher) Close() error {
+	if err := f.cmap.Close(); err != nil {
+		return fmt.Errorf("dlsite: %s", err)
+	}
+	return nil
+}
+
 // FetchWork fetches information for a DLSite work.
 func (f *Fetcher) FetchWork(c codes.WorkCode, o ...FetchWorkOption) (*Work, error) {
 	opts := mergeOptions(o...)
@@ -111,23 +118,12 @@ func (*Fetcher) fetchWork(c codes.WorkCode) (*Work, error) {
 	return w, nil
 }
 
-// FlushCache flushes the cache, reading and writing changes from the cache file.
-// An error is returned if the cache path is empty.
-func (f *Fetcher) FlushCache() error {
-	if f.cmap == nil {
-		return errors.New("dlsite flush cache: no cache")
-	}
-	return f.cmap.Flush()
-}
-
 func (f *Fetcher) getCached(o fetchWorkOptions, c codes.WorkCode) *Work {
 	if o.ignoreCache || f.cmap == nil {
 		return nil
 	}
-	w, ok := f.cmap.Get(c).(*Work)
-	if !ok {
-		return nil
-	}
+	var w *Work
+	f.cmap.Get(c, &w)
 	return w
 }
 

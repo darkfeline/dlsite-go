@@ -64,7 +64,7 @@ func printInfo(c codes.RJCode) error {
 	if err != nil {
 		return fmt.Errorf("fetch work info: %w", err)
 	}
-	defer df.FlushCache()
+	defer df.Close()
 	w, err := df.FetchWork(codes.WorkCode(c))
 	if err != nil {
 		return fmt.Errorf("fetch work info: %w", err)

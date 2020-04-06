@@ -25,7 +25,7 @@ func Example() {
 	if err != nil {
 		panic(err)
 	}
-	defer f.FlushCache()
+	defer f.Close()
 	w, err := f.FetchWork("RJ123")
 	if err != nil {
 		panic(err)

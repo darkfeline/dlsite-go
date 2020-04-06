@@ -73,7 +73,7 @@ func mvMain(path string, r codes.RJCode) error {
 	if err != nil {
 		return fmt.Errorf("fetch work info: %w", err)
 	}
-	defer df.FlushCache()
+	defer df.Close()
 	w, err := df.FetchWork(codes.WorkCode(r))
 	if err != nil {
 		return fmt.Errorf("fetch work info: %w", err)

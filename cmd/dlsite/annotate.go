@@ -46,7 +46,7 @@ func (c *annotateCmd) Execute(ctx context.Context, f *flag.FlagSet, _ ...interfa
 		log.Printf("Error making fetcher: %s", err)
 		return subcommands.ExitFailure
 	}
-	defer df.FlushCache()
+	defer df.Close()
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		line := scanner.Text()
