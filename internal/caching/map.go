@@ -74,7 +74,7 @@ func (m *Map) Put(c codes.WorkCode, v interface{}) {
 	if err != nil {
 		panic(err)
 	}
-	_, err = m.db.Exec(`INSERT INTO dlsite_works (code, data) VALUES (?, ?)`, c, d)
+	_, err = m.db.Exec(`INSERT OR REPLACE INTO dlsite_works (code, data) VALUES (?, ?)`, c, d)
 	if err != nil {
 		panic(err)
 	}

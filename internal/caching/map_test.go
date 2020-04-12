@@ -72,3 +72,30 @@ func TestMap(t *testing.T) {
 	})
 	m.Close()
 }
+
+func TestMap_insert_twice(t *testing.T) {
+	t.Parallel()
+	tempdir, err := ioutil.TempDir("", "test")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.RemoveAll(tempdir) })
+	p := filepath.Join(tempdir, "map")
+	m, err := Open(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { m.Close() })
+	c := codes.WorkCode("RJ123")
+	want := &Work{Title: "amiya"}
+	m.Put(c, want)
+	want = &Work{Title: "eyjafjalla"}
+	m.Put(c, want)
+	t.Run("get from modified", func(t *testing.T) {
+		var got *Work
+		m.Get(c, &got)
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("Got %+v; want %+v", got, want)
+		}
+	})
+}
