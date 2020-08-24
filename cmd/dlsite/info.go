@@ -21,6 +21,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/google/subcommands"
 	"go.felesatra.moe/dlsite/v2"
@@ -78,6 +79,7 @@ func printWork(f io.Writer, w *dlsite.Work) (int, error) {
 Title	%s
 Circle	%s
 Series	%s
+CVs	%s
 `
-	return fmt.Fprintf(f, t, w.Code, w.Title, w.Circle, w.Series)
+	return fmt.Fprintf(f, t, w.Code, w.Title, w.Circle, w.Series, strings.Join(w.CVs, ", "))
 }
