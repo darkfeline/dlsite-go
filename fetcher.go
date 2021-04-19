@@ -134,61 +134,6 @@ func (f *Fetcher) putCached(c codes.WorkCode, w *Work) {
 	f.cmap.Put(c, w)
 }
 
-// A FetcherOption can be passed to NewFetcher to configure Fetcher creation.
-type FetcherOption interface {
-	apply(*Fetcher)
-	fetcherOption()
-}
-
-type cacheOption struct {
-	path string
-}
-
-func (o cacheOption) apply(f *Fetcher) {
-	f.cachePath = o.path
-}
-
-func (cacheOption) fetcherOption() {}
-
-// CachePath sets the cache path of the Fetcher.
-// If path is empty, no cache file is used.
-func CachePath(path string) FetcherOption {
-	return cacheOption{path}
-}
-
-// A FetchWorkOption can be passed to FetchWork to configure fetching.
-type FetchWorkOption interface {
-	apply(fetchWorkOptions) fetchWorkOptions
-	fetchWorkOption()
-}
-
-type fetchWorkOptions struct {
-	ignoreCache bool
-}
-
-func mergeOptions(o ...FetchWorkOption) fetchWorkOptions {
-	var opts fetchWorkOptions
-	for _, o := range o {
-		opts = o.apply(opts)
-	}
-	return opts
-}
-
-type ignoreCacheOption struct{}
-
-func (ignoreCacheOption) apply(o fetchWorkOptions) fetchWorkOptions {
-	o.ignoreCache = true
-	return o
-}
-
-func (ignoreCacheOption) fetchWorkOption() {}
-
-// IgnoreCache returns an option that ignores the cache when fetching.
-// Updated work information is still added to the cache.
-func IgnoreCache() FetchWorkOption {
-	return ignoreCacheOption{}
-}
-
 func fillWorkFromDLSite(w *Work, dw *dlsite.Work) {
 	if dw.Code != "" {
 		w.Code = codes.WorkCode(dw.Code)
