@@ -33,6 +33,7 @@ func parseWork(c codes.RJCode, r io.Reader) (*Work, error) {
 		Title:       parseTitle(d),
 		Circle:      parseCircle(d),
 		Series:      parseSeries(d),
+		Seiyuu:      parseSeiyuu(d),
 		WorkFormats: parseWorkFormats(d),
 		Description: parseDescription(d),
 	}
@@ -54,6 +55,17 @@ func parseSeries(d *goquery.Document) string {
 	return strings.TrimSpace(d.
 		Find("#work_outline").
 		Find(`th:contains("シリーズ名")`).Next().Text())
+}
+
+func parseSeiyuu(d *goquery.Document) []string {
+	fields := strings.Split(
+		d.Find("#work_outline").
+			Find(`th:contains("声優")`).Next().Text(),
+		"/")
+	for i := range fields {
+		fields[i] = strings.TrimSpace(fields[i])
+	}
+	return fields
 }
 
 func parseWorkFormats(d *goquery.Document) []string {

@@ -37,6 +37,7 @@ type Work struct {
 	Title       string
 	Circle      string
 	Series      string
+	Seiyuu      []string
 	WorkFormats []string
 	Description string
 }

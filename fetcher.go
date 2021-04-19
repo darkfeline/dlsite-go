@@ -147,6 +147,9 @@ func fillWorkFromDLSite(w *Work, dw *dlsite.Work) {
 	if dw.Series != "" {
 		w.Series = dw.Series
 	}
+	if len(dw.Seiyuu) > 0 {
+		w.CVs = dw.Seiyuu
+	}
 	if dw.Description != "" {
 		w.Description = dw.Description
 	}
@@ -169,7 +172,12 @@ func fillWorkFromHVDB(w *Work, c codes.RJCode) error {
 	if w.Circle == "" && hw.Circle != "" {
 		w.Circle = hw.Circle
 	}
-	w.CVs = append(w.CVs, hw.CVs...)
+	for _, v := range hw.CVs {
+		if v == "N/A" {
+			continue
+		}
+		w.CVs = append(w.CVs, v)
+	}
 	w.Tags = append(w.Tags, hw.Tags...)
 	w.SFW = hw.SFW
 	return nil
