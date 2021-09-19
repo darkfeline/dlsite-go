@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"sort"
 
 	"go.felesatra.moe/xdg"
 
@@ -115,6 +116,7 @@ func (*Fetcher) fetchWork(c codes.WorkCode) (*Work, error) {
 	if !ok {
 		return nil, fmt.Errorf("fetch work %s: all methods failed", c)
 	}
+	w.CVs = removeDupes(w.CVs)
 	return w, nil
 }
 
@@ -181,4 +183,19 @@ func fillWorkFromHVDB(w *Work, c codes.RJCode) error {
 	w.Tags = append(w.Tags, hw.Tags...)
 	w.SFW = hw.SFW
 	return nil
+}
+
+func removeDupes(v []string) []string {
+	if len(v) < 2 {
+		return v
+	}
+	sort.Strings(v)
+	i := 1
+	for j := 1; j < len(v); j++ {
+		if v[i-1] != v[j] {
+			v[i] = v[j]
+			i++
+		}
+	}
+	return v[:i]
 }
