@@ -34,6 +34,8 @@ func CachePath(path string) FetcherOption {
 }
 
 // A FetchWorkOption can be passed to FetchWork to configure fetching.
+//
+// This is deprecated; use the FetchWorkDirectly method instead.
 type FetchWorkOption interface {
 	apply(fetchWorkOptions) fetchWorkOptions
 }
@@ -59,6 +61,8 @@ func (ignoreCacheOption) apply(o fetchWorkOptions) fetchWorkOptions {
 
 // IgnoreCache returns an option that ignores the cache when fetching.
 // Updated work information is still added to the cache.
+//
+// This is deprecated; use the FetchWorkDirectly method instead.
 func IgnoreCache() FetchWorkOption {
 	return ignoreCacheOption{}
 }

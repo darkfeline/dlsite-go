@@ -82,11 +82,22 @@ func (f *Fetcher) Close() error {
 }
 
 // FetchWork fetches information for a DLSite work.
+//
+// The FetchWorkOption argument is deprecated; use the
+// FetchWorkDirectly method instead.
 func (f *Fetcher) FetchWork(c codes.WorkCode, o ...FetchWorkOption) (*Work, error) {
 	opts := mergeOptions(o...)
 	if w := f.getCached(opts, c); w != nil {
 		return w, nil
 	}
+	return f.FetchWorkDirectly(c)
+}
+
+// FetchWorkDirectly fetches information for a DLSite work, bypassing
+// any cache.
+// The newly fetched information will still be cached for future
+// FetchWork calls.
+func (f *Fetcher) FetchWorkDirectly(c codes.WorkCode) (*Work, error) {
 	w, err := f.fetchWork(c)
 	if err != nil {
 		return nil, fmt.Errorf("dlsite: %s", err)
