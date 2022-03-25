@@ -87,7 +87,10 @@ func (f *Fetcher) Close() error {
 // FetchWorkDirectly method instead.
 func (f *Fetcher) FetchWork(c codes.WorkCode, o ...FetchWorkOption) (*Work, error) {
 	opts := mergeOptions(o...)
-	if w := f.getCached(opts, c); w != nil {
+	if opts.ignoreCache {
+		return f.FetchWorkDirectly(c)
+	}
+	if w := f.getCached(c); w != nil {
 		return w, nil
 	}
 	return f.FetchWorkDirectly(c)
@@ -131,8 +134,8 @@ func (*Fetcher) fetchWork(c codes.WorkCode) (*Work, error) {
 	return w, nil
 }
 
-func (f *Fetcher) getCached(o fetchWorkOptions, c codes.WorkCode) *Work {
-	if o.ignoreCache || f.cmap == nil {
+func (f *Fetcher) getCached(c codes.WorkCode) *Work {
+	if f.cmap == nil {
 		return nil
 	}
 	var w *Work
