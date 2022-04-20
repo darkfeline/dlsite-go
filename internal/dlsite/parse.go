@@ -41,7 +41,7 @@ func parseWork(c codes.RJCode, r io.Reader) (*Work, error) {
 }
 
 func parseTitle(d *goquery.Document) string {
-	return strings.TrimSpace(d.Find("#work_name").Find("a").Text())
+	return strings.TrimSpace(d.Find("#work_name").Text())
 }
 
 func parseCircle(d *goquery.Document) string {
@@ -64,6 +64,9 @@ func parseSeiyuu(d *goquery.Document) []string {
 		"/")
 	for i := range fields {
 		fields[i] = strings.TrimSpace(fields[i])
+	}
+	if len(fields) == 1 && fields[0] == "" {
+		return nil
 	}
 	return fields
 }
