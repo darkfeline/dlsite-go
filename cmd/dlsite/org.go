@@ -130,8 +130,10 @@ func findAllWorks(dir string) ([]relPath, error) {
 			return nil
 		}
 		if codes.ParseRJCode(info.Name()) != "" {
-			// path has dir as a prefix plus a slash: dir/some/path
-			p := path[len(dir)+1:]
+			p, err := filepath.Rel(dir, path)
+			if err != nil {
+				panic(err)
+			}
 			w = append(w, relPath(p))
 			return filepath.SkipDir
 		}
