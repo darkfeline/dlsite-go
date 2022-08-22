@@ -162,7 +162,7 @@ func organizeWork(f *dlsite.Fetcher, topdir string, p relPath, dry, desc bool) e
 	if desc {
 		log.Printf("Adding description files for %s", p)
 		if err := addDLSiteFiles(w, p.relativeTo(topdir)); err != nil {
-			return fmt.Errorf("add desc files: %w", err)
+			return fmt.Errorf("add desc file: %w", err)
 		}
 	}
 	if new == p {
