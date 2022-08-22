@@ -18,7 +18,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -106,7 +105,7 @@ func (p relPath) relativeTo(root string) string {
 
 // findWorks returns the relative paths for works found in the directory.
 func findWorks(dir string) ([]relPath, error) {
-	fi, err := ioutil.ReadDir(dir)
+	fi, err := os.ReadDir(dir)
 	if err != nil {
 		return nil, err
 	}
@@ -208,7 +207,7 @@ func addDLSiteFiles(w *dlsite.Work, p string) error {
 		if ok {
 			return nil
 		}
-		if err := ioutil.WriteFile(fp, []byte(w.Description), 0666); err != nil {
+		if err := os.WriteFile(fp, []byte(w.Description), 0666); err != nil {
 			return err
 		}
 	}
