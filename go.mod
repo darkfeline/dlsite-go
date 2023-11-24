@@ -9,7 +9,7 @@ require (
 
 require (
 	github.com/andybalholm/cascadia v1.0.0 // indirect
-	golang.org/x/net v0.0.0-20180218175443-cbe0f9307d01 // indirect
+	golang.org/x/net v0.17.0 // indirect
 )
 
 go 1.21
