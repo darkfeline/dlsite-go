@@ -19,10 +19,9 @@ import (
 	"encoding/gob"
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"sort"
-
-	"go.felesatra.moe/xdg"
 
 	"go.felesatra.moe/dlsite/v2/codes"
 	"go.felesatra.moe/dlsite/v2/internal/caching"
@@ -58,7 +57,7 @@ type Fetcher struct {
 // The Fetcher keeps a cache in the user's XDG cache directory.
 func NewFetcher(o ...FetcherOption) (*Fetcher, error) {
 	f := &Fetcher{
-		cachePath: filepath.Join(xdg.CacheHome(), "go.felesatra.moe_dlsite_v2.cache"),
+		cachePath: filepath.Join(userCacheDir(), "go.felesatra.moe_dlsite_v2.cache"),
 	}
 	for _, o := range o {
 		o.apply(f)
@@ -212,4 +211,12 @@ func removeDupes(v []string) []string {
 		}
 	}
 	return v[:i]
+}
+
+func userCacheDir() string {
+	d := os.Getenv("XDG_CACHE_HOME")
+	if d == "" {
+		d = filepath.Join(os.Getenv("HOME"), ".cache")
+	}
+	return d
 }
