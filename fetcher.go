@@ -111,7 +111,6 @@ func (f *Fetcher) FetchWorkDirectly(c codes.WorkCode) (*Work, error) {
 func (*Fetcher) fetchWork(c codes.WorkCode) (*Work, error) {
 	w := &Work{}
 	var ok bool
-	// TODO: Validate RJ code
 	dw, err := dlsite.FetchWork(codes.RJCode(c))
 	if err != nil {
 		log.Printf("dlsite: %s", err)
