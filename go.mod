@@ -4,7 +4,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.4.1
 	github.com/google/go-cmp v0.4.0
 	github.com/google/subcommands v1.2.0
-	github.com/mattn/go-sqlite3 v2.0.3+incompatible
+	github.com/mattn/go-sqlite3 v1.14.18
 )
 
 require (
