@@ -23,7 +23,7 @@ import (
 	"go.felesatra.moe/dlsite/v2/codes"
 )
 
-func parseWork(c codes.RJCode, r io.Reader) (*Work, error) {
+func parseWork(c codes.WorkCode, r io.Reader) (*Work, error) {
 	d, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
 		return nil, fmt.Errorf("cannot parse document: %w", err)

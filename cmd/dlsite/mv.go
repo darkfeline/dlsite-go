@@ -56,7 +56,7 @@ func (c *mvCmd) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) 
 	} else {
 		s = path
 	}
-	r := codes.ParseRJCode(s)
+	r := codes.ParseCode(s)
 	if r == "" {
 		log.Printf("Invalid RJ code %s", s)
 		return subcommands.ExitUsageError
@@ -68,13 +68,13 @@ func (c *mvCmd) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) 
 	return subcommands.ExitSuccess
 }
 
-func mvMain(path string, r codes.RJCode) error {
+func mvMain(path string, r codes.WorkCode) error {
 	df, err := dlsite.NewFetcher()
 	if err != nil {
 		return fmt.Errorf("fetch work info: %w", err)
 	}
 	defer df.Close()
-	w, err := df.FetchWork(codes.WorkCode(r))
+	w, err := df.FetchWork(r)
 	if err != nil {
 		return fmt.Errorf("fetch work info: %w", err)
 	}

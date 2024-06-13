@@ -48,7 +48,7 @@ func (c *infoCmd) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}
 		fmt.Fprint(os.Stderr, c.Usage())
 		return subcommands.ExitUsageError
 	}
-	r := codes.ParseRJCode(f.Arg(0))
+	r := codes.ParseCode(f.Arg(0))
 	if r == "" {
 		log.Printf("Invalid RJ code")
 		return subcommands.ExitUsageError
@@ -60,13 +60,13 @@ func (c *infoCmd) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}
 	return subcommands.ExitSuccess
 }
 
-func printInfo(c codes.RJCode) error {
+func printInfo(c codes.WorkCode) error {
 	df, err := dlsite.NewFetcher()
 	if err != nil {
 		return fmt.Errorf("fetch work info: %w", err)
 	}
 	defer df.Close()
-	w, err := df.FetchWork(codes.WorkCode(c))
+	w, err := df.FetchWork(c)
 	if err != nil {
 		return fmt.Errorf("fetch work info: %w", err)
 	}

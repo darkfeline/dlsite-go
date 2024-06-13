@@ -25,7 +25,7 @@ import (
 	"go.felesatra.moe/dlsite/v2/codes"
 )
 
-func testdataPath(p string, c codes.RJCode) string {
+func testdataPath(p string, c codes.WorkCode) string {
 	return filepath.Join("testdata", p, fmt.Sprintf("%s.html", c))
 }
 
@@ -33,7 +33,7 @@ func TestParseWorkWithSeries(t *testing.T) {
 	t.Parallel()
 	c := "RJ189758"
 	want := &Work{
-		Code:        codes.RJCode(c),
+		Code:        codes.WorkCode(c),
 		Title:       "意地悪な機械人形に完全支配される音声 地獄級射精禁止オナニーサポート4 ヘルエグゼキューション",
 		Circle:      "B-bishop",
 		Series:      "地獄級オナニーサポート",
@@ -48,7 +48,7 @@ func TestParseWorkWithoutSeries(t *testing.T) {
 	t.Parallel()
 	c := "RJ173248"
 	want := &Work{
-		Code:        codes.RJCode(c),
+		Code:        codes.WorkCode(c),
 		Title:       "搾精天使ピュアミルク 背後からバイノーラルでいじめられる音声",
 		Circle:      "B-bishop",
 		Seiyuu:      []string{"餅よもぎ", "七海うと"},
@@ -62,7 +62,7 @@ func TestParseWorkWithTracklist(t *testing.T) {
 	t.Parallel()
 	c := "RJ126928"
 	want := &Work{
-		Code:        codes.RJCode(c),
+		Code:        codes.WorkCode(c),
 		Title:       "まじこスハロウィン -可愛い彼女は吸血鬼!? 妖しく光る魅了の魔眼の巻-",
 		Circle:      "クッキーボイス",
 		Series:      "ハロウィンパーティー",
@@ -77,7 +77,7 @@ func TestParseWorkAnnounce(t *testing.T) {
 	t.Parallel()
 	c := "RJ275695"
 	want := &Work{
-		Code:        codes.RJCode(c),
+		Code:        codes.WorkCode(c),
 		Title:       "貞操帯所有者のための強制ED化調教",
 		Circle:      "Chastity Fancier(性的禁欲愛好家)",
 		Series:      "キョウカ様による調教♪",
@@ -89,17 +89,17 @@ func TestParseWorkAnnounce(t *testing.T) {
 }
 
 func testParseWork(t *testing.T, rjcode string, p string, want *Work) {
-	c := codes.RJCode(rjcode)
+	c := codes.WorkCode(rjcode)
 	f, err := os.Open(testdataPath(p, c))
 	if err != nil {
 		t.Fatalf("Error opening test file: %s", err)
 	}
 	defer f.Close()
-	got, err := parseWork(codes.RJCode(c), f)
+	got, err := parseWork(codes.WorkCode(c), f)
 	if err != nil {
 		t.Fatalf("Error parsing work: %s", err)
 	}
-	if got.Code != codes.RJCode(c) {
+	if got.Code != codes.WorkCode(c) {
 		t.Errorf("Expected Code %#v, got %#v", c, got.Code)
 	}
 	if want.Title != got.Title {
@@ -127,7 +127,7 @@ func TestParseWorkGame(t *testing.T) {
 	t.Parallel()
 	c := "RJ265946"
 	want := &Work{
-		Code:        codes.RJCode(c),
+		Code:        codes.WorkCode(c),
 		Title:       "サキュバスアカデミア",
 		Circle:      "SQDT",
 		Series:      "サキュバスクエスト",

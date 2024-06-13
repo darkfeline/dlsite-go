@@ -111,7 +111,7 @@ func findWorks(dir string) ([]relPath, error) {
 	}
 	var w []relPath
 	for _, fi := range fi {
-		if codes.ParseRJCode(fi.Name()) != "" {
+		if codes.ParseCode(fi.Name()) != "" {
 			w = append(w, relPath(fi.Name()))
 		}
 	}
@@ -129,7 +129,7 @@ func findAllWorks(dir string) ([]relPath, error) {
 		if !info.IsDir() {
 			return nil
 		}
-		if codes.ParseRJCode(info.Name()) != "" {
+		if codes.ParseCode(info.Name()) != "" {
 			p, err := filepath.Rel(dir, path)
 			if err != nil {
 				panic(err)
@@ -232,9 +232,9 @@ func fileExists(p string) (ok bool, err error) {
 // the directory filename is used.
 func getDirWork(f *dlsite.Fetcher, p string) (*dlsite.Work, error) {
 	fn := filepath.Base(p)
-	r := codes.ParseRJCode(fn)
+	r := codes.ParseCode(fn)
 	if r == "" {
 		return nil, fmt.Errorf("invalid work filename %s", fn)
 	}
-	return f.FetchWork(codes.WorkCode(r))
+	return f.FetchWork(r)
 }

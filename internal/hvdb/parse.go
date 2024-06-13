@@ -28,7 +28,7 @@ func parseWork(r io.Reader) (*Work, error) {
 		return nil, err
 	}
 	return &Work{
-		Code:         parseRJCode(d),
+		Code:         parseWorkCode(d),
 		Title:        parseTitle(d),
 		EnglishTitle: parseEnglishTitle(d),
 		Circle:       parseCircle(d),
@@ -38,9 +38,9 @@ func parseWork(r io.Reader) (*Work, error) {
 	}, nil
 }
 
-func parseRJCode(d *goquery.Document) codes.RJCode {
+func parseWorkCode(d *goquery.Document) codes.WorkCode {
 	s := d.Find("div.body-content").Find("h2").Text()
-	return codes.ParseRJCode(s)
+	return codes.ParseCode(s)
 }
 
 func parseTitle(d *goquery.Document) string {

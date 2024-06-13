@@ -111,7 +111,7 @@ func (f *Fetcher) FetchWorkDirectly(c codes.WorkCode) (*Work, error) {
 func (*Fetcher) fetchWork(c codes.WorkCode) (*Work, error) {
 	w := &Work{}
 	var ok bool
-	dw, err := dlsite.FetchWork(codes.RJCode(c))
+	dw, err := dlsite.FetchWork(c)
 	if err != nil {
 		log.Printf("dlsite: %s", err)
 	} else {
@@ -119,7 +119,7 @@ func (*Fetcher) fetchWork(c codes.WorkCode) (*Work, error) {
 		fillWorkFromDLSite(w, dw)
 	}
 	if dw == nil || len(dw.WorkFormats) == 0 || dw.WorkFormats[0] == "ボイス・ASMR" {
-		if err := fillWorkFromHVDB(w, codes.RJCode(c)); err != nil {
+		if err := fillWorkFromHVDB(w, c); err != nil {
 			log.Printf("dlsite: %s", err)
 		} else {
 			ok = true
@@ -150,7 +150,7 @@ func (f *Fetcher) putCached(c codes.WorkCode, w *Work) {
 
 func fillWorkFromDLSite(w *Work, dw *dlsite.Work) {
 	if dw.Code != "" {
-		w.Code = codes.WorkCode(dw.Code)
+		w.Code = dw.Code
 	}
 	if dw.Title != "" {
 		w.Title = dw.Title
@@ -169,13 +169,13 @@ func fillWorkFromDLSite(w *Work, dw *dlsite.Work) {
 	}
 }
 
-func fillWorkFromHVDB(w *Work, c codes.RJCode) error {
+func fillWorkFromHVDB(w *Work, c codes.WorkCode) error {
 	hw, err := hvdb.FetchWork(c)
 	if err != nil {
 		return err
 	}
 	if hw.Code != "" {
-		w.Code = codes.WorkCode(hw.Code)
+		w.Code = hw.Code
 	}
 	if w.Title == "" && hw.Title != "" {
 		w.Title = hw.Title

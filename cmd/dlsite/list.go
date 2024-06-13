@@ -60,8 +60,8 @@ func listMain(c *listCmd) error {
 			return fmt.Errorf("fetch work info: %w", err)
 		}
 		defer df.Close()
-		return mapCodes(os.Stdin, func(r codes.RJCode) error {
-			w, err := df.FetchWork(codes.WorkCode(r))
+		return mapCodes(os.Stdin, func(r codes.WorkCode) error {
+			w, err := df.FetchWork(r)
 			if err != nil {
 				return fmt.Errorf("fetch work info: %w", err)
 			}
@@ -71,17 +71,17 @@ func listMain(c *listCmd) error {
 		})
 
 	} else {
-		return mapCodes(os.Stdin, func(r codes.RJCode) error {
+		return mapCodes(os.Stdin, func(r codes.WorkCode) error {
 			fmt.Println(r)
 			return nil
 		})
 	}
 }
 
-func mapCodes(r io.Reader, f func(codes.RJCode) error) error {
+func mapCodes(r io.Reader, f func(codes.WorkCode) error) error {
 	s := bufio.NewScanner(r)
 	for s.Scan() {
-		r := codes.ParseRJCode(s.Text())
+		r := codes.ParseCode(s.Text())
 		if err := f(r); err != nil {
 			return err
 		}

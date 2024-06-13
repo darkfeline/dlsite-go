@@ -22,18 +22,18 @@ import (
 	"go.felesatra.moe/dlsite/v2/codes"
 )
 
-func workURL(c codes.RJCode) string {
+func workURL(c codes.WorkCode) string {
 	return fmt.Sprintf("http://www.dlsite.com/maniax/work/=/product_id/%s.html", c)
 }
 
-func announceURL(c codes.RJCode) string {
+func announceURL(c codes.WorkCode) string {
 	return fmt.Sprintf("http://www.dlsite.com/maniax/announce/=/product_id/%s.html", c)
 }
 
 // Work holds information about a DLSite work.  If information for a
 // field is missing, it will be the zero value.
 type Work struct {
-	Code        codes.RJCode
+	Code        codes.WorkCode
 	Title       string
 	Circle      string
 	Series      string
@@ -42,13 +42,12 @@ type Work struct {
 	Description string
 }
 
-// FetchWork returns the Work for the codes.RJCode by parsing the
-// corresponding DLSite page.
+// FetchWork returns [Work] by parsing the corresponding DLSite page.
 // Errors from the HTTP request or from parsing the HTML
 // of the page are returned, but errors from parsing specific
 // information from the page are not returned.
 // Not all fields will be present for all works, like Series.
-func FetchWork(c codes.RJCode) (*Work, error) {
+func FetchWork(c codes.WorkCode) (*Work, error) {
 	r, err := requestPage(c)
 	if err != nil {
 		return nil, fmt.Errorf("fetch from dlsite: %w", err)
@@ -63,7 +62,7 @@ func FetchWork(c codes.RJCode) (*Work, error) {
 
 // requestPage requests the page for a DLSite work.  If error is nil,
 // make sure to defer a call to r.Body.Close().
-func requestPage(c codes.RJCode) (*http.Response, error) {
+func requestPage(c codes.WorkCode) (*http.Response, error) {
 	r, err := http.Get(workURL(c))
 	if err != nil {
 		return nil, fmt.Errorf("GET %s: %w", workURL(c), err)
@@ -79,7 +78,7 @@ func requestPage(c codes.RJCode) (*http.Response, error) {
 	return r, nil
 }
 
-func requestAnnouncePage(c codes.RJCode) (*http.Response, error) {
+func requestAnnouncePage(c codes.WorkCode) (*http.Response, error) {
 	r, err := http.Get(announceURL(c))
 	if err != nil {
 		return nil, fmt.Errorf("GET %s: %w", workURL(c), err)

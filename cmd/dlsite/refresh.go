@@ -61,14 +61,14 @@ func refreshWorks(r io.Reader) error {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		line := scanner.Text()
-		c := codes.ParseRJCode(line)
+		c := codes.ParseCode(line)
 		if c == "" {
 			log.Printf("Bad line %s", line)
 			continue
 		}
 		time.Sleep(time.Duration(rand.Int63n(int64(sleepMax))))
 		log.Printf("Refreshing %s", c)
-		if _, err := df.FetchWorkDirectly(codes.WorkCode(c)); err != nil {
+		if _, err := df.FetchWorkDirectly(c); err != nil {
 			log.Printf("Error: %s", err)
 			continue
 		}

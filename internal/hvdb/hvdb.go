@@ -23,7 +23,7 @@ import (
 )
 
 type Work struct {
-	Code         codes.RJCode
+	Code         codes.WorkCode
 	Title        string
 	EnglishTitle string
 	Circle       string
@@ -32,7 +32,10 @@ type Work struct {
 	SFW          bool
 }
 
-func FetchWork(c codes.RJCode) (*Work, error) {
+func FetchWork(c codes.WorkCode) (*Work, error) {
+	if t := c.WorkType(); t != "RJ" {
+		return nil, fmt.Errorf("fetch from hvdb: WorkType %q not supported", t)
+	}
 	r, err := requestPage(c)
 	if err != nil {
 		return nil, fmt.Errorf("fetch from hvdb: %s", err)
@@ -47,7 +50,7 @@ func FetchWork(c codes.RJCode) (*Work, error) {
 
 // requestPage requests the page for a work.  If error is nil,
 // make sure to defer a call to r.Body.Close().
-func requestPage(c codes.RJCode) (*http.Response, error) {
+func requestPage(c codes.WorkCode) (*http.Response, error) {
 	r, err := http.Get(hvdbURL(c))
 	if err != nil {
 		return nil, fmt.Errorf("request %s: %s", c, err)
@@ -59,6 +62,6 @@ func requestPage(c codes.RJCode) (*http.Response, error) {
 	return r, nil
 }
 
-func hvdbURL(c codes.RJCode) string {
+func hvdbURL(c codes.WorkCode) string {
 	return fmt.Sprintf("https://hvdb.me/Dashboard/WorkDetails/%s", c[2:])
 }

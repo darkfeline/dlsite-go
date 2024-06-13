@@ -24,13 +24,13 @@ import (
 	"go.felesatra.moe/dlsite/v2/codes"
 )
 
-func testdataPath(c codes.RJCode) string {
+func testdataPath(c codes.WorkCode) string {
 	return filepath.Join("testdata", fmt.Sprintf("%s.html", c))
 }
 
 func TestParseWork(t *testing.T) {
 	t.Parallel()
-	c := codes.RJCode("RJ222837")
+	c := codes.WorkCode("RJ222837")
 	want := &Work{
 		Code:         c,
 		Title:        "籠の鳥",
@@ -55,7 +55,7 @@ func TestParseWork(t *testing.T) {
 
 func TestParseWorkWithBools(t *testing.T) {
 	t.Parallel()
-	c := codes.RJCode("RJ242172")
+	c := codes.WorkCode("RJ242172")
 	want := &Work{
 		Code:   c,
 		Title:  "森の中で赤ずきんのお姉さんと～内緒の甘々癒され耳かき～",
@@ -73,7 +73,7 @@ func TestParseWorkWithBools(t *testing.T) {
 	testParseWork(t, c, want)
 }
 
-func testParseWork(t *testing.T, c codes.RJCode, want *Work) {
+func testParseWork(t *testing.T, c codes.WorkCode, want *Work) {
 	f, err := os.Open(testdataPath(c))
 	if err != nil {
 		t.Fatalf("Error opening test file: %s", err)

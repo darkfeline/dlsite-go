@@ -50,12 +50,12 @@ func (c *annotateCmd) Execute(ctx context.Context, f *flag.FlagSet, _ ...interfa
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		line := scanner.Text()
-		c := codes.ParseRJCode(line)
+		c := codes.ParseCode(line)
 		if c == "" {
 			fmt.Println(line)
 			continue
 		}
-		w, err := df.FetchWork(codes.WorkCode(c))
+		w, err := df.FetchWork(c)
 		if err != nil {
 			log.Printf("Error fetching work info: %s", err)
 			continue
