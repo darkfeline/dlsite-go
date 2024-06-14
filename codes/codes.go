@@ -31,7 +31,7 @@ func (c WorkCode) WorkType() string {
 	return string(c[:2])
 }
 
-var codePat = regexp.MustCompile("(RJ|RE|BJ)[0-9]+")
+var codePat = regexp.MustCompile("(BJ|RE|RJ|VJ)[0-9]+")
 
 // An RJCode is an RJ code for a DLSite work.
 // An RJCode is a valid WorkCode.
