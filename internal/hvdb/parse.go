@@ -54,8 +54,8 @@ func parseEnglishTitle(d *goquery.Document) string {
 }
 
 func parseCircle(d *goquery.Document) string {
-	s := strings.TrimSpace(d.Find(`label[for="Circle_Name"]`).Next().Text())
-	return strings.Split(s, " / ")[0]
+	s := d.Find(`label[for="Circle_Name"]`).Next().Text()
+	return strings.TrimSpace(strings.Split(s, " / ")[0])
 }
 
 func parseTags(d *goquery.Document) []string {
