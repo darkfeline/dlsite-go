@@ -15,6 +15,7 @@
 package dlsite
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"strings"
@@ -23,10 +24,15 @@ import (
 	"go.felesatra.moe/dlsite/v2/codes"
 )
 
+var errCensored = errors.New("censored")
+
 func parseWork(c codes.WorkCode, r io.Reader) (*Work, error) {
 	d, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
-		return nil, fmt.Errorf("cannot parse document: %w", err)
+		return nil, fmt.Errorf("parse work: %w", err)
+	}
+	if parseError(d) {
+		return nil, fmt.Errorf("parse work: %w", errCensored)
 	}
 	w := &Work{
 		Code:        c,
@@ -38,6 +44,10 @@ func parseWork(c codes.WorkCode, r io.Reader) (*Work, error) {
 		Description: parseDescription(d),
 	}
 	return w, nil
+}
+
+func parseError(d *goquery.Document) bool {
+	return d.Find(".error_box_work").Length() > 0
 }
 
 func parseTitle(d *goquery.Document) string {
